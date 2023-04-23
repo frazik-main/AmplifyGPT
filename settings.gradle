@@ -1,0 +1,10 @@
+rootProject.name = 'autogpt-java'
+
+include 'lib'
+include 'examples'
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}

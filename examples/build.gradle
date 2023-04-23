@@ -1,0 +1,10 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+application {
+    mainClass.set('examples.ResearchGpt')
+}
+
+dependencies {
+    implementation project(":lib")
+}

@@ -1,2 +1,6 @@
 # autogpt-java
-Java version for AutoGPT
+AutoGPT Java library
+
+## Running the example project
+./gradlew examples:run
+
