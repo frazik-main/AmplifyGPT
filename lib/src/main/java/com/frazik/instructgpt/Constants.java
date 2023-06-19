@@ -20,8 +20,16 @@ public class Constants {
             "No user assistance",
             "Exclusively use a single command listed in double quotes e.g. \"command_name\""
     );
-
     static String DEFAULT_RESPONSE_FORMAT = "";
+    static String DEFAULT_RESPONSE_FORMAT_EXAMPLE = "" +
+            "\"thoughts\": {\n" +
+            "        \"text\": \"thought\",\n" +
+            "        \"reasoning\": \"reasoning\",\n" +
+            "        \"plan\": \"- short bulleted\\n- list that conveys\\n- long-term plan\",\n" +
+            "        \"criticism\": \"constructive self-criticism\",\n" +
+            "        \"speak\": \"thoughts summary to say to user\",\n" +
+            "    },\n" +
+            "    \"command\": {\"name\": \"command name\", \"args\": {\"arg name\": \"value\"}},\n";
     static final String SEED_INPUT = "Determine which next command to use, and respond using the format specified above:";
 
     static {
@@ -41,8 +49,8 @@ public class Constants {
 
         try {
             Map<String, Map<String, String>> defaultJSONFormat = objectMapper.readValue(objectMapper.writeValueAsString(defaultResponseMap), HashMap.class);
-            String defaultResponseFormatJson = objectMapper.writeValueAsString(DEFAULT_RESPONSE_FORMAT);
-            DEFAULT_RESPONSE_FORMAT  = String.format("You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Python json.loads\n\n%s", defaultResponseFormatJson, SEED_INPUT);
+            String defaultResponseFormatJson = objectMapper.writeValueAsString(DEFAULT_RESPONSE_FORMAT_EXAMPLE);
+            DEFAULT_RESPONSE_FORMAT  = String.format("You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Java JSON ObjectMapper\n\n%s", defaultResponseFormatJson, SEED_INPUT);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
