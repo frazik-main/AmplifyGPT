@@ -1,4 +1,4 @@
-rootProject.name = 'autogpt-java'
+rootProject.name = 'InstructGPT'
 
 include 'lib'
 include 'examples'
