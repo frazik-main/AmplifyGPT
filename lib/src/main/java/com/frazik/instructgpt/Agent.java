@@ -149,10 +149,7 @@ public class Agent {
             this.stagingResponse = null;
         }
         List<Map<String, String>> fullPrompt = this.getFullPrompt(message);
-        int tokenCount = (int) fullPrompt.stream().flatMap(m -> m.get("content") != null ?
-                        Arrays.stream(( m.get("content")).split(" ")) :
-                        null)
-                .count();
+        int tokenCount = openAIModel.countTokens(fullPrompt);
         int tokenLimit = openAIModel.getTokenLimit();
         String resp = openAIModel.chat(fullPrompt, tokenLimit - tokenCount);
         System.out.println("=========");
