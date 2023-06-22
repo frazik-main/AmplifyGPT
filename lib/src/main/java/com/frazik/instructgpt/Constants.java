@@ -2,6 +2,7 @@ package com.frazik.instructgpt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
  * Credits: Auto-GPT (https://github.com/Significant-Gravitas/Auto-GPT)
  */
 public class Constants {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);;
 
     static final List<String> DEFAULT_CONSTRAINTS = Arrays.asList(
             "~4000 word limit for short term memory. Your short term memory is short, so immediately save important information to files.",
@@ -20,19 +21,9 @@ public class Constants {
             "No user assistance",
             "Exclusively use a single command listed in double quotes e.g. \"command_name\""
     );
-    static String DEFAULT_RESPONSE_FORMAT = "";
-    static String DEFAULT_RESPONSE_FORMAT_EXAMPLE = "" +
-            "\"thoughts\": {\n" +
-            "        \"text\": \"thought\",\n" +
-            "        \"reasoning\": \"reasoning\",\n" +
-            "        \"plan\": \"- short bulleted\\n- list that conveys\\n- long-term plan\",\n" +
-            "        \"criticism\": \"constructive self-criticism\",\n" +
-            "        \"speak\": \"thoughts summary to say to user\",\n" +
-            "    },\n" +
-            "    \"command\": {\"name\": \"command name\", \"args\": {\"arg name\": \"value\"}},\n";
     static final String SEED_INPUT = "Determine which next command to use, and respond using the format specified above:";
 
-    static {
+    public static String getDefaultResponseFormat() {
         Map<String, String> thoughtsMap = new HashMap<>();
         thoughtsMap.put("text", "thought");
         thoughtsMap.put("reasoning", "reasoning");
@@ -42,17 +33,17 @@ public class Constants {
 
         Map<String, String> commandMap = new HashMap<>();
         commandMap.put("name", "command name");
+        commandMap.put("args", "{\"arg name\": \"value\"}");
 
         Map<String, Object> defaultResponseMap = new HashMap<>();
         defaultResponseMap.put("thoughts", thoughtsMap);
         defaultResponseMap.put("command", commandMap);
 
         try {
-            Map<String, Map<String, String>> defaultJSONFormat = objectMapper.readValue(objectMapper.writeValueAsString(defaultResponseMap), HashMap.class);
-            String defaultResponseFormatJson = objectMapper.writeValueAsString(DEFAULT_RESPONSE_FORMAT_EXAMPLE);
-            DEFAULT_RESPONSE_FORMAT  = String.format("You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Java JSON ObjectMapper\n\n%s", defaultResponseFormatJson, SEED_INPUT);
+            String defaultJSONFormat = objectMapper.writeValueAsString(defaultResponseMap);
+            return String.format("You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Java JSON ObjectMapper\n\n%s", defaultJSONFormat, SEED_INPUT);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

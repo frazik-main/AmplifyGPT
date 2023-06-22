@@ -41,13 +41,13 @@ public class Agent {
         this.history = new PromptHistory();
         this.name = name;
         this.description = description != null ? description : "A personal assistant that responds exclusively in JSON";
-        this.goals = goals != null ? goals : new ArrayList<String>();
+        this.goals = goals != null ? goals : new ArrayList<>();
         this.model = model;
-        this.subAgents = new HashMap<String, Object>();
+        this.subAgents = new HashMap<>();
         this.memory = new LocalMemory(new OpenAIEmbeddingProvider());
-        this.constraints = new ArrayList<String>(DEFAULT_CONSTRAINTS);
-        this.evaluations = new ArrayList<String>(DEFAULT_EVALUATIONS);
-        this.responseFormat = DEFAULT_RESPONSE_FORMAT;
+        this.constraints = new ArrayList<>(DEFAULT_CONSTRAINTS);
+        this.evaluations = new ArrayList<>(DEFAULT_EVALUATIONS);
+        this.responseFormat = Constants.getDefaultResponseFormat();
         //this.tools = Arrays.asList(new Browser(), new GoogleSearch());
         this.openAIModel = new OpenAIModel(model);
     }
