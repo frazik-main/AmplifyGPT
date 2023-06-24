@@ -11,6 +11,7 @@ import com.frazik.instructgpt.response.Response;
 import com.frazik.instructgpt.response.Thought;
 import com.frazik.instructgpt.tools.Tool;
 import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 
 import java.time.ZonedDateTime;
@@ -18,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.frazik.instructgpt.Constants.*;
-
+@Slf4j
 public class Agent {
     private String name;
     private String description;
@@ -168,9 +169,14 @@ public class Agent {
                 parsedResp = mapper.createObjectNode().set("command", parsedResp);
             }
 
-            this.stagingTool = (Map<String, Object>) parsedResp.get("command");
-            this.stagingResponse = parsedResp;
+            String commandArgs = parsedResp.get("command").get("args").asText();
+            String commandName = parsedResp.get("command").get("name").asText();
 
+            this.stagingTool = new HashMap<>();
+            this.stagingTool.put("args", commandArgs);
+            this.stagingTool.put("name", commandName);
+
+            this.stagingResponse = parsedResp;
             // Parse the 'thoughts' and 'command' parts of the response into objects
             if (parsedResp.has("thoughts") && parsedResp.has("command")) {
                 JsonNode thoughtsNode = parsedResp.get("thoughts");
@@ -186,7 +192,7 @@ public class Agent {
             }
 
         } catch (Exception e) {
-            // do nothing
+            log.error("Error parsing response: " + resp, e);
         }
 
         return null;
