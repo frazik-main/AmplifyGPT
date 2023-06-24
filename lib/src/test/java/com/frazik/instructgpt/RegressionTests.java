@@ -67,7 +67,7 @@ public class RegressionTests {
 
         Agent agent = new Agent(name, description, goals, "gpt-3.5-turbo");
         Response resp = agent.chat();
-        assertNull(resp);
+        assertNotNull(resp);
     }
 
 }

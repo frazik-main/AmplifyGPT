@@ -11,6 +11,7 @@ import com.theokanning.openai.service.OpenAiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class OpenAIModel extends Model {
 
     @Override
     public String chat(List<ChatMessage> messages, Integer maxTokens, Double temperature) {
-        OpenAiService openAiService = new OpenAiService(apiKey);
+        OpenAiService openAiService = new OpenAiService(apiKey, Duration.ofSeconds(55));
 
         int numRetries = 3;
         for (int i = 0; i < numRetries; i++) {
