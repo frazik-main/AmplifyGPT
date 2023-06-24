@@ -111,7 +111,7 @@ public class OpenAIModel extends Model {
     @Override
     public int getTokenLimit() {
         if (model.equals("gpt-3.5-turbo")) {
-            return 3900; //TODO: Token limit should be 4000, there is a bug in the token counter
+            return 3700; //TODO: Token limit should be 4000, there is a bug in the token counter
         } else if (model.equals("gpt-4")) {
             return 8000;
         } else {
