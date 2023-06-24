@@ -9,6 +9,8 @@ import com.frazik.instructgpt.models.OpenAIModel;
 import com.frazik.instructgpt.prompts.PromptHistory;
 import com.frazik.instructgpt.response.Response;
 import com.frazik.instructgpt.response.Thought;
+import com.frazik.instructgpt.tools.Browser;
+import com.frazik.instructgpt.tools.GoogleSearch;
 import com.frazik.instructgpt.tools.Tool;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +51,7 @@ public class Agent {
         this.constraints = new ArrayList<>(DEFAULT_CONSTRAINTS);
         this.evaluations = new ArrayList<>(DEFAULT_EVALUATIONS);
         this.responseFormat = Constants.getDefaultResponseFormat();
-        //this.tools = Arrays.asList(new Browser(), new GoogleSearch());
+        this.tools = Arrays.asList(new Browser(), new GoogleSearch());
         this.openAIModel = new OpenAIModel(model);
     }
 
