@@ -11,6 +11,7 @@ import com.theokanning.openai.service.OpenAiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class OpenAIModel extends Model {
 
     @Override
     public String chat(List<ChatMessage> messages, Integer maxTokens, Double temperature) {
-        OpenAiService openAiService = new OpenAiService(apiKey);
+        OpenAiService openAiService = new OpenAiService(apiKey, Duration.ofSeconds(55));
 
         int numRetries = 3;
         for (int i = 0; i < numRetries; i++) {
@@ -110,7 +111,7 @@ public class OpenAIModel extends Model {
     @Override
     public int getTokenLimit() {
         if (model.equals("gpt-3.5-turbo")) {
-            return 3900; //TODO: Token limit should be 4000, there is a bug in the token counter
+            return 3700; //TODO: Token limit should be 4000, there is a bug in the token counter
         } else if (model.equals("gpt-4")) {
             return 8000;
         } else {
