@@ -62,7 +62,6 @@ public class OpenAIModel extends Model {
                 chatCompletionRequest.setTemperature(temperature);
                 chatCompletionRequest.setMessages(messages);
                 chatCompletionRequest.setMaxTokens(maxTokens);
-                openAiService.createChatCompletion(chatCompletionRequest).getChoices().get(0).getMessage().getContent();
                 return openAiService.createChatCompletion(chatCompletionRequest).getChoices().get(0).getMessage().getContent();
             } catch (OpenAiHttpException e) {
                 if (e.statusCode == 429) {
