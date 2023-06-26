@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class OpenAIEmbeddingProvider extends EmbeddingProvider {
+    public static final String OPENAI_API_KEY = "OPENAI_API_KEY";
     private final String model;
 
     public OpenAIEmbeddingProvider(String model) {
@@ -23,7 +24,7 @@ public class OpenAIEmbeddingProvider extends EmbeddingProvider {
 
     @Override
     public double[] get(String text) {
-        String token = System.getenv("OPENAI_API_KEY");
+        String token = System.getenv(OPENAI_API_KEY);
         OpenAiService  openAiService = new OpenAiService(token);
         EmbeddingRequest embeddingRequest = new EmbeddingRequest();
         embeddingRequest.setModel(model);
@@ -35,14 +36,4 @@ public class OpenAIEmbeddingProvider extends EmbeddingProvider {
         return firstEmbeddings.stream().mapToDouble(Double::doubleValue).toArray();
     }
 
-    @Override
-    public Map<String, String> config() {
-        Map<String, String> map = super.config();
-        map.put("model", this.model);
-        return map;
-    }
-
-    public static OpenAIEmbeddingProvider fromConfig(Map<String, String> config) {
-        return new OpenAIEmbeddingProvider(config.get("model"));
-    }
 }
