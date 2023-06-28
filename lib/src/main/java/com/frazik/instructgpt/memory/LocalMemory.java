@@ -41,7 +41,7 @@ public class LocalMemory extends Memory {
     @Override
     public List<String> get(String query, int k) {
         if (this.embs == null) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
         double[] embeddings = embeddingProvider.get(query);
         INDArray scores;

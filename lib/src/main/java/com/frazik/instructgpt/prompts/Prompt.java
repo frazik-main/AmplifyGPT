@@ -37,11 +37,11 @@ public class Prompt {
             TypeToken<Map<String, List<String>>> token = new TypeToken<Map<String, List<String>>>() {};
             Map<String, List<String>> rawPrompts = new Gson().fromJson(new FileReader(file), token.getType());
             for (Map.Entry<String, List<String>> entry : rawPrompts.entrySet()) {
-                String completePrompt = "";
+                StringBuilder completePrompt = new StringBuilder();
                 for(String p : entry.getValue()) {
-                    completePrompt += p;
+                    completePrompt.append(p);
                 }
-                prompts.put(entry.getKey(), completePrompt);
+                prompts.put(entry.getKey(), completePrompt.toString());
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

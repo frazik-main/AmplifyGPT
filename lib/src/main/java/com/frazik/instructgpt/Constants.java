@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Credits: Auto-GPT (https://github.com/Significant-Gravitas/Auto-GPT)
+ * Credits: Auto-GPT (<a href="https://github.com/Significant-Gravitas/Auto-GPT">...</a>)
  */
 public class Constants {
-    private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);;
+    private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     static final List<String> DEFAULT_CONSTRAINTS = Arrays.asList(
             "~4000 word limit for short term memory. Your short term memory is short, so immediately save important information to files.",

@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Browser extends Tool {
-    private ChromeOptions options;
+    private final ChromeOptions options;
     private WebDriver driver;
-    private Summarizer summarizer;
+    private final Summarizer summarizer;
 
     public Browser() {
         super();
