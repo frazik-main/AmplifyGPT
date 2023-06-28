@@ -26,8 +26,7 @@ public class Agent {
     private final String name;
     private final String description;
     private final List<String> goals;
-    private String model;
-    private Map<String, Object> subAgents;
+    private final Map<String, Object> subAgents;
     private final LocalMemory memory;
     private final List<String> constraints;
     private final List<String> evaluations;
@@ -45,7 +44,6 @@ public class Agent {
         this.name = name;
         this.description = description != null ? description : "A personal assistant that responds exclusively in JSON";
         this.goals = goals != null ? goals : new ArrayList<>();
-        this.model = model;
         this.subAgents = new HashMap<>();
         this.memory = new LocalMemory(new OpenAIEmbeddingProvider());
         this.constraints = new ArrayList<>(DEFAULT_CONSTRAINTS);
@@ -278,7 +276,7 @@ public class Agent {
 
     public void clearState() {
         history.clear();
-        //subAgents.clear();
+        subAgents.clear();
         memory.clear();
     }
 
@@ -299,7 +297,7 @@ public class Agent {
             prompt.add(evaluationPrompt());
         }
         prompt.add(this.responseFormat);
-        return String.join("\n", prompt) + "\n";
+        return newLineDelimited(prompt);
     }
 
     public String personaPrompt() {
@@ -315,7 +313,7 @@ public class Agent {
         for (int i = 0; i < goals.size(); i++) {
             prompt.add((i + 1) + ". " + goals.get(i));
         }
-        return String.join("\n", prompt) + "\n";
+        return newLineDelimited(prompt);
     }
 
     public String constraintsPrompt() {
@@ -324,7 +322,7 @@ public class Agent {
         for (int i = 0; i < constraints.size(); i++) {
             prompt.add((i + 1) + ". " + constraints.get(i));
         }
-        return String.join("\n", prompt) + "\n";
+        return newLineDelimited(prompt);
     }
 
     /**
@@ -361,8 +359,8 @@ public class Agent {
         JSONObject responseFormat = new JSONObject();
         responseFormat.put("success", "true");
         taskCompleteCommand.put("response_format", responseFormat);
-        prompt.add((this.tools.size() + 1) + ". " + taskCompleteCommand.toString());
-        return String.join("\n", prompt) + "\n";
+        prompt.add((this.tools.size() + 1) + ". " + taskCompleteCommand);
+        return newLineDelimited(prompt);
     }
 
     public String resourcesPrompt() {
@@ -371,19 +369,22 @@ public class Agent {
         prompt.add("1. Internet access for searches and information gathering.");
         prompt.add("2. Long Term memory management.");
         prompt.add("3. GPT-3.5 powered Agents for delegation of simple tasks.");
-        return String.join("\n", prompt) + "\n";
+        return newLineDelimited(prompt);
     }
 
     public String evaluationPrompt() {
         List<String> prompt = new ArrayList<>();
         prompt.add("Performance Evaluation:");
         for (int i = 0; i < this.evaluations.size(); i++) {
-            String evaln = this.evaluations.get(i);
-            prompt.add((i + 1) + ". " + evaln);
+            String evaluation = this.evaluations.get(i);
+            prompt.add((i + 1) + ". " + evaluation);
         }
-        return String.join("\n", prompt) + "\n";
+        return newLineDelimited(prompt);
     }
 
+    private static String newLineDelimited(List<String> prompt) {
+        return String.join("\n", prompt) + "\n";
+    }
 
     public void cli() {
         // implementation of the command-line interface for the agent
