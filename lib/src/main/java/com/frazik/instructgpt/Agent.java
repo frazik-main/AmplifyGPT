@@ -6,6 +6,7 @@ import com.frazik.instructgpt.auto.Cli;
 import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
 import com.frazik.instructgpt.memory.LocalMemory;
 import com.frazik.instructgpt.models.OpenAIModel;
+import com.frazik.instructgpt.prompts.Prompt;
 import com.frazik.instructgpt.prompts.PromptHistory;
 import com.frazik.instructgpt.response.Response;
 import com.frazik.instructgpt.response.Thought;
@@ -311,9 +312,8 @@ public class Agent {
         if (!goals.isEmpty()) {
             prompt.add(goalsPrompt());
         }
-        if (!constraints.isEmpty()) {
-            prompt.add(constraintsPrompt());
-        }
+        prompt.add(constraintsPrompt());
+
         if (tools != null && !tools.isEmpty()) {
             prompt.add(toolsPrompt());
         }
@@ -342,12 +342,8 @@ public class Agent {
     }
 
     public String constraintsPrompt() {
-        ArrayList<String> prompt = new ArrayList<>();
-        prompt.add("Constraints:");
-        for (int i = 0; i < constraints.size(); i++) {
-            prompt.add((i + 1) + ". " + constraints.get(i));
-        }
-        return newLineDelimited(prompt);
+        Prompt constraintsPrompt = new Prompt("constraints");
+        return constraintsPrompt.toPromptString();
     }
 
     /**
