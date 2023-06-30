@@ -306,7 +306,7 @@ public class Agent {
     }
 
     public String headerPrompt() {
-        ArrayList<String> prompt = new ArrayList<String>();
+        ArrayList<String> prompt = new ArrayList<>();
         prompt.add(personaPrompt());
         if (!goals.isEmpty()) {
             prompt.add(goalsPrompt());
@@ -333,7 +333,7 @@ public class Agent {
     }
 
     public String goalsPrompt() {
-        ArrayList<String> prompt = new ArrayList<String>();
+        ArrayList<String> prompt = new ArrayList<>();
         prompt.add("GOALS:");
         for (int i = 0; i < goals.size(); i++) {
             prompt.add((i + 1) + ". " + goals.get(i));
@@ -342,7 +342,7 @@ public class Agent {
     }
 
     public String constraintsPrompt() {
-        ArrayList<String> prompt = new ArrayList<String>();
+        ArrayList<String> prompt = new ArrayList<>();
         prompt.add("Constraints:");
         for (int i = 0; i < constraints.size(); i++) {
             prompt.add((i + 1) + ". " + constraints.get(i));
