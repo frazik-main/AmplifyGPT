@@ -61,52 +61,77 @@ public class Agent {
     }
 
     private List<Map<String, String>> getFullPrompt(String userInput) {
+        List<Map<String, String>> prompt = new ArrayList<>();
+
+        // Build header prompt
         Map<String, String> header = buildPrompts("system", headerPrompt());
+        prompt.add(header);
+
+        // Build current date and time prompt
         Map<String, String> dateTime = buildPrompts("system", "The current time and date is " + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss yyyy")));
-        List<Map<String, String>> prompt = new ArrayList<>(Arrays.asList(header, dateTime));
+        prompt.add(dateTime);
+
+        // Retrieve relevant memory
         List<String> relevantMemory = memory.get(history.subListToString(Math.max(0, history.getSize() - 10), history.getSize()), 10);
+
         if (relevantMemory != null) {
-            // Add as many documents from memory as possible while staying under the token limit
             int tokenLimit = 2500;
             Map<String, String> context = null;
+
+            // Add memory documents while staying under token limit
             while (!relevantMemory.isEmpty()) {
                 String memoryStr = String.join("\n", relevantMemory);
                 context = buildPrompts("system", "This reminds you of these events from your past:\n" + memoryStr + "\n");
                 List<Map<String, String>> updatedPrompt = new ArrayList<>(prompt);
                 updatedPrompt.add(context);
                 int tokenCount = openAIModel.countTokens(updatedPrompt);
+
                 if (tokenCount < tokenLimit) {
                     break;
                 }
+
                 relevantMemory.remove(relevantMemory.size() - 1);
             }
+
             if (context != null) {
                 prompt.add(prompt.size() - 1, context);
             }
         }
+
+        // Add user input prompt
         List<Map<String, String>> userPrompt = new ArrayList<>();
         if (userInput != null && !userInput.isEmpty()) {
             userPrompt.add(buildPrompts("user", userInput));
         }
+
         List<Map<String, String>> newPrompt = new ArrayList<>(prompt.subList(0, 2));
         newPrompt.addAll(history.getValues());
+
         if(prompt.size() > 2) {
             newPrompt.addAll(prompt.subList(2, prompt.size()));
         }
+
         newPrompt.addAll(userPrompt);
         prompt = newPrompt;
+
+        // Ensure each prompt is not null
         for (Map<String, String> p : prompt) {
             assert p != null;
         }
-        int tokenLimit = openAIModel.getTokenLimit() - 1000; // 1000 reserved for response
+
+        int tokenLimit = openAIModel.getTokenLimit() - 1000;
         int tokenCount = openAIModel.countTokens(prompt);
-        while (history.getSize() > 1 && tokenCount > tokenLimit) { // keep at least 1 message from history
+
+        // Remove history messages to stay under token limit
+        while (history.getSize() > 1 && tokenCount > tokenLimit) {
             history.remove(0);
             prompt.remove(2);
             tokenCount = openAIModel.countTokens(prompt);
         }
+
         return prompt;
     }
+
 
     public Response chat() {
         return chat(SEED_INPUT, false);
