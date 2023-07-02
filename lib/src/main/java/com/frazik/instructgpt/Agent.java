@@ -318,18 +318,14 @@ public class Agent {
             prompt.add(toolsPrompt());
         }
         prompt.add(resourcesPrompt());
-        if (!evaluations.isEmpty()) {
-            prompt.add(evaluationPrompt());
-        }
+        prompt.add(evaluationPrompt());
         prompt.add(this.responseFormat);
         return newLineDelimited(prompt);
     }
 
     public String personaPrompt() {
-        return "You are " + name + ", " + description + ". " +
-                "Your decisions must always be made independently without " +
-                "seeking user assistance. Play to your strengths as an LLM and pursue " +
-                "simple strategies with no legal complications.;\n";
+        Prompt personaPrompt = new Prompt("persona");
+        return personaPrompt.toFormattedPromptString("name", "description");
     }
 
     public String goalsPrompt() {
@@ -385,12 +381,8 @@ public class Agent {
     }
 
     public String resourcesPrompt() {
-        List<String> prompt = new ArrayList<>();
-        prompt.add("Resources:");
-        prompt.add("1. Internet access for searches and information gathering.");
-        prompt.add("2. Long Term memory management.");
-        prompt.add("3. GPT-3.5 powered Agents for delegation of simple tasks.");
-        return newLineDelimited(prompt);
+        Prompt resourcesPrompt = new Prompt("resources");
+        return resourcesPrompt.toPromptString();
     }
 
     public String evaluationPrompt() {
