@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Prompt {
     private final String role;
-    private String content;
+    private final String content;
     private static Map<String, List<String>> promptsBundle = new HashMap<>();
 
     static {
@@ -35,7 +35,8 @@ public class Prompt {
         private final List<String> prompts;
         private String role;
         public Builder(String key) {
-            this.prompts = promptsBundle.get(key);
+            //deep copy of prompts
+            prompts = new ArrayList<>(promptsBundle.get(key));
         }
 
         public Builder numberList() {
@@ -48,9 +49,7 @@ public class Prompt {
 
         public Builder delimited() {
             // Append a newline to each prompt
-            for (int i = 1; i < prompts.size(); i++) {
-                prompts.set(i, "\n" + prompts.get(i));
-            }
+            prompts.replaceAll(s -> s + "\n");
             return this;
         }
 
