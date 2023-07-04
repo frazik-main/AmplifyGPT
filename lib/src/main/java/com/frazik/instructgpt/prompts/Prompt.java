@@ -10,29 +10,32 @@ import java.util.*;
 
 public class Prompt {
     private final String role;
-
+    private String content;
     private static Map<String, List<String>> promptsBundle = new HashMap<>();
 
     static {
         readPromptJson();
     }
     
-    public Prompt(String key, String role) {
-        readPromptJson();
+    public Prompt(String role, String content) {
         this.role = role;
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public static class Builder
     {
         private final List<String> prompts;
-        private final String key;
-        private final String content;
         private String role;
         public Builder(String key) {
             this.prompts = promptsBundle.get(key);
-            this.key = key;
-            this.content = null;
-            this.role = null;
         }
 
         public Builder numberList() {
@@ -51,46 +54,25 @@ public class Prompt {
             return this;
         }
 
+        public Builder formatted(int i, Object... args) {
+            // Format the prompt
+            prompts.set(i, String.format(prompts.get(i), args));
+            return this;
+        }
         public Builder withRole(String role) {
             this.role = role;
             return this;
         }
 
         public Prompt build() {
-            return new Prompt(key, role);
+            String content = String.join("", prompts);
+            return new Prompt(role, content);
         }
     }
 
-    public Prompt(String key) {
-        readPromptJson();
-        this.role = null;
-    }
-
-    public String toPromptString() {
-        return content;
-    }
-
-    public String toDelimitedPromptString() {
-        return newLineDelimited(promptsBundle.get(role));
-    }
-
-    public String toFormattedPromptString(Object... args) {
-        return String.format(content, args);
-    }
-
-    public Map<String, String> toPromptMap() {
-        Map<String, String> promptMap = new HashMap<>();
-        promptMap.put("role", role);
-        promptMap.put("content", content);
-        return promptMap;
-    }
-
-    private String readPromptFromJson(String key) {
-        return newLineDelimited(promptsBundle.get(key));
-    }
     private static void readPromptJson() {
         File file = new File(
-                Objects.requireNonNull(this.getClass().
+                Objects.requireNonNull(Prompt.class.
                                 getClassLoader().
                                 getResource("prompts_en.json"))
                         .getFile()
@@ -101,9 +83,5 @@ public class Prompt {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private String newLineDelimited(List<String> prompt) {
-        return String.join("\n", prompt) + "\n";
     }
 }

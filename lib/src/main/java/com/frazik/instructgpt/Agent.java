@@ -324,8 +324,10 @@ public class Agent {
     }
 
     public String personaPrompt() {
-        Prompt personaPrompt = new Prompt("persona");
-        return personaPrompt.toFormattedPromptString("name", "description");
+        Prompt personaPrompt = new Prompt.Builder("persona")
+                .formatted(0, "name", "description")
+                .build();
+        return personaPrompt.getContent();
     }
 
     public String goalsPrompt() {
@@ -338,8 +340,9 @@ public class Agent {
     }
 
     public String constraintsPrompt() {
-        Prompt constraintsPrompt = new Prompt("constraints");
-        return constraintsPrompt.toPromptString();
+        Prompt constraintsPrompt = new Prompt.Builder("constraints")
+                .build();
+        return constraintsPrompt.getContent();
     }
 
     /**
@@ -381,8 +384,9 @@ public class Agent {
     }
 
     public String resourcesPrompt() {
-        Prompt resourcesPrompt = new Prompt("resources");
-        return resourcesPrompt.toPromptString();
+        Prompt resourcesPrompt = new Prompt.Builder("resources")
+                .build();
+        return resourcesPrompt.getContent();
     }
 
     public String evaluationPrompt() {
