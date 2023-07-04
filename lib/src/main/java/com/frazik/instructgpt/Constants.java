@@ -14,13 +14,6 @@ import java.util.Map;
  */
 public class Constants {
     private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-
-    static final List<String> DEFAULT_CONSTRAINTS = Arrays.asList(
-            "~4000 word limit for short term memory. Your short term memory is short, so immediately save important information to files.",
-            "If you are unsure how you previously did something or want to recall past events, thinking about similar events will help you remember.",
-            "No user assistance",
-            "Exclusively use a single command listed in double quotes e.g. \"command_name\""
-    );
     static final String SEED_INPUT = "Determine which next command to use, and respond using the format specified above:";
 
     public static String getDefaultResponseFormat() {
@@ -46,12 +39,4 @@ public class Constants {
             throw new RuntimeException(e);
         }
     }
-
-    static final List<String> DEFAULT_EVALUATIONS = Arrays.asList(
-            "Continuously review and analyze your actions to ensure you are performing to the best of your abilities.",
-            "Constructively self-criticize your big-picture behavior constantly.",
-            "Reflect on past decisions and strategies to refine your approach.",
-            "Every command has a cost, so be smart and efficient. Aim to complete tasks in the least number of steps."
-    );
-
 }

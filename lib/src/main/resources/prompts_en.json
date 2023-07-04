@@ -23,5 +23,8 @@
     "Constructively self-criticize your big-picture behavior constantly.",
     "Reflect on past decisions and strategies to refine your approach.",
     "Every command has a cost, so be smart and efficient. Aim to complete tasks in the least number of steps."
+  ],
+  "seed": [
+    "Determine which next command to use, and respond using the format specified above."
   ]
 }

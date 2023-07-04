@@ -20,8 +20,6 @@ import org.json.JSONObject;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-import static com.frazik.instructgpt.Constants.*;
 @Slf4j
 public class Agent {
     private final String name;
@@ -29,8 +27,6 @@ public class Agent {
     private final List<String> goals;
     private final Map<String, Object> subAgents;
     private final LocalMemory memory;
-    private final List<String> constraints;
-    private final List<String> evaluations;
     private final PromptHistory history;
     private final List<Tool> tools;
     private Map<String, Object> stagingTool;
@@ -47,8 +43,6 @@ public class Agent {
         this.goals = goals != null ? goals : new ArrayList<>();
         this.subAgents = new HashMap<>();
         this.memory = new LocalMemory(new OpenAIEmbeddingProvider());
-        this.constraints = new ArrayList<>(DEFAULT_CONSTRAINTS);
-        this.evaluations = new ArrayList<>(DEFAULT_EVALUATIONS);
         this.responseFormat = Constants.getDefaultResponseFormat();
         this.tools = Arrays.asList(new Browser(), new GoogleSearch());
         this.openAIModel = new OpenAIModel(model);
@@ -135,7 +129,8 @@ public class Agent {
 
 
     public Response chat() {
-        return chat(SEED_INPUT, false);
+        Prompt seedInput = new Prompt.Builder("seed").build();
+        return chat(seedInput.getContent(), false);
     }
 
     public Response chat(String message) {
@@ -390,13 +385,10 @@ public class Agent {
     }
 
     public String evaluationPrompt() {
-        List<String> prompt = new ArrayList<>();
-        prompt.add("Performance Evaluation:");
-        for (int i = 0; i < this.evaluations.size(); i++) {
-            String evaluation = this.evaluations.get(i);
-            prompt.add((i + 1) + ". " + evaluation);
-        }
-        return newLineDelimited(prompt);
+        Prompt evaluationPrompt = new Prompt.Builder("evaluation")
+                .delimited()
+                .build();
+        return evaluationPrompt.getContent();
     }
 
     private static String newLineDelimited(List<String> prompt) {
