@@ -3,9 +3,7 @@ package com.frazik.instructgpt.prompts;
 import com.google.gson.Gson;
 import org.openqa.selenium.json.TypeToken;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 
 public class Prompt {
@@ -77,17 +75,18 @@ public class Prompt {
     }
 
     private static void readPromptJson() {
-        File file = new File(
-                Objects.requireNonNull(Prompt.class.
-                                getClassLoader().
-                                getResource("prompts_en.json"))
-                        .getFile()
-        );
         try {
+            InputStream inputStream = Prompt.class.getClassLoader().getResourceAsStream("prompts_en.json");
+
+            if (inputStream == null) {
+                throw new FileNotFoundException("prompts_en.json file not found.");
+            }
+
+            InputStreamReader reader = new InputStreamReader(inputStream);
             TypeToken<Map<String, List<String>>> token = new TypeToken<Map<String, List<String>>>() {};
-            promptsBundle = new Gson().fromJson(new FileReader(file), token.getType());
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            promptsBundle = new Gson().fromJson(reader, token.getType());
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading prompts_en.json file.", e);
         }
     }
 }
