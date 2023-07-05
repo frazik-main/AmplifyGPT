@@ -8,16 +8,19 @@
     <b>Customizable Auto-GPT library for Java</b>
 </p>
 
-InstructGPT is a Java library similar to [Auto-GPT](https://github.com/Significant-Gravitas/Auto-GPT) with customization and i18n support in mind.
+AmplifyGPT is a Java library version of [Auto-GPT](https://github.com/Significant-Gravitas/Auto-GPT) with customization 
+and i18n support in mind. It can help you easily incorporate Auto-GPT like functionality into your new or existing project.
 
 ## Feature roadmap
 
-*  **Use InstructGTP in your Java project** - Make your existing project more intelligent with Auto-GPT like features.
-*  **Customization** - Customization and extensibility is the core of InstructGPT. You can customize the way it works.
-*  **Internationalization** - InstructGPT is i18n ready. You can use it in any language you want.
-*  **GPT 3.5 support** - We are developing InstructGPT with GPT 3.5. You can use it with GPT 3.5 or GPT 4.
-*  **Prompt optimization** - InstructGPT uses prompt optimization to consume fewer tokens.
-*  **Multi-model support** - InstructGPT supports multiple models. You can use any model you want.
+* **Use InstructGTP in your JVM based project** - Make your existing project more intelligent with Auto-GPT like features.
+* **Customization** - Customization and extensibility is the core of InstructGPT. You can customize the way it works.
+* **Internationalization** - AmplifyGPT is i18n ready. You can use it in any language you want.
+* **GPT 3.5 and GPT 4 support** - AmplifyGPT supports both GPT 3.5 and GPT 4.
+* **Multi-model support** - InstructGPT is architected to supports multiple models (Bard, LLaMA for example).
+* **Multi-language support** - Multiple languages support. Translate one JSON file and you are good to go.
+* **Prompt optimization** - Prompt optimization to consume fewer tokens.
+* **Support Java 8 and above** - For old and new projects.
 
 ## Installation
 
