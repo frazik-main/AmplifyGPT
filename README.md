@@ -1,7 +1,7 @@
 
 <H1>
 <p align="center">
-  InstructGPT
+  AmplifyGPT
 </p>
 </H1>
 <p align="center">
