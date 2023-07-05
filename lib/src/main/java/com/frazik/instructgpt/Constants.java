@@ -3,6 +3,7 @@ package com.frazik.instructgpt;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.frazik.instructgpt.prompts.Prompt;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,9 +15,10 @@ import java.util.Map;
  */
 public class Constants {
     private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-    static final String SEED_INPUT = "Determine which next command to use, and respond using the format specified above:";
 
     public static String getDefaultResponseFormat() {
+        Prompt seedInput = new Prompt.Builder("seed").build();
+
         Map<String, String> thoughtsMap = new HashMap<>();
         thoughtsMap.put("text", "thought");
         thoughtsMap.put("reasoning", "reasoning");
@@ -34,7 +36,7 @@ public class Constants {
 
         try {
             String defaultJSONFormat = objectMapper.writeValueAsString(defaultResponseMap);
-            return String.format("You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Java JSON ObjectMapper\n\n%s", defaultJSONFormat, SEED_INPUT);
+            return String.format("You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Java JSON ObjectMapper\n\n%s", defaultJSONFormat, seedInput.getContent());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

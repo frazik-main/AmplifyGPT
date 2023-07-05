@@ -26,5 +26,14 @@
   ],
   "seed": [
     "Determine which next command to use, and respond using the format specified above."
+  ],
+  "no_command": [
+    "Command name not provided. Make sure to follow the specified response format."
+  ],
+  "arg_missing": [
+    "Command args not provided. Make sure to follow the specified response format."
+  ],
+  "current_time": [
+    "The current time and date is %s."
   ]
 }

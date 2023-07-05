@@ -63,8 +63,11 @@ public class Agent {
         prompt.add(header);
 
         // Build current date and time prompt
-        Map<String, String> dateTime = buildPrompts("system", "The current time and date is " + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss yyyy")));
-        prompt.add(dateTime);
+        Prompt currentTimePrompt = new Prompt.Builder("current_time")
+                .withRole("system")
+                .formatted(0, ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss yyyy")))
+                .build();
+        prompt.add(currentTimePrompt.getPrompt());
 
         // Retrieve relevant memory
         List<String> relevantMemory = memory.get(history.subListToString(Math.max(0, history.getSize() - 10), history.getSize()), 10);
@@ -264,7 +267,10 @@ public class Agent {
 
     public Object runStagingTool() {
         if (!this.stagingTool.containsKey("name")) {
-            this.history.addNewPrompt("system", "Command name not provided. Make sure to follow the specified response format.");
+            Prompt noCommandPrompt = new Prompt.Builder("no_command")
+                    .withRole("system")
+                    .build();
+            this.history.addNewPrompt(noCommandPrompt.getPrompt());
             return null;
         }
         if (this.stagingTool.get("name").equals("task_complete")) {
@@ -273,7 +279,10 @@ public class Agent {
             }};
         }
         if (!this.stagingTool.containsKey("args")) {
-            this.history.addNewPrompt("system", "Command args not provided. Make sure to follow the specified response format.");
+            Prompt argsNotProvidedPrompt = new Prompt.Builder("arg_missing")
+                    .withRole("system")
+                    .build();
+            this.history.addNewPrompt(argsNotProvidedPrompt.getPrompt());
             return null;
         }
         String toolId = (String) this.stagingTool.get("name");

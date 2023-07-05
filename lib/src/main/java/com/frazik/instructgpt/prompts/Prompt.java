@@ -30,6 +30,13 @@ public class Prompt {
         return role;
     }
 
+    public Map<String, String> getPrompt() {
+        Map<String, String> prompt = new HashMap<>();
+        prompt.put("role", role);
+        prompt.put("content", content);
+        return prompt;
+    }
+
     public static class Builder
     {
         private final List<String> prompts;
