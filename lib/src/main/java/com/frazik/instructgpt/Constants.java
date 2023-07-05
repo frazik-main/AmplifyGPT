@@ -36,7 +36,7 @@ public class Constants {
 
         try {
             String defaultJSONFormat = objectMapper.writeValueAsString(defaultResponseMap);
-            return String.format("You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Java JSON ObjectMapper\n\n%s", defaultJSONFormat, seedInput.getContent());
+            return String.format("You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Java JSON ObjectMapper\n\n", defaultJSONFormat);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
