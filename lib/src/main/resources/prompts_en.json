@@ -38,5 +38,20 @@
   ],
   "command_missing": [
     "Command %s does not exist."
+  ],
+  "reminds_past": [
+    "This reminds you of these events from your past:\n %s \n"
+  ],
+  "human_feedback" : [
+    "Assistant reply: %s\nResult: %s\nHuman Feedback: %s"
+  ],
+  "no_approve": [
+    "User did not approve running %s. "
+  ],
+  "no_approve_replay": [
+    "Assistant reply: %s\nResult: (User did not approve)\nHuman Feedback: %s"
+  ],
+  "response": [
+    "Response from %s:\n%s"
   ]
 }
