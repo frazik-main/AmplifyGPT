@@ -35,5 +35,8 @@
   ],
   "current_time": [
     "The current time and date is %s."
+  ],
+  "command_missing": [
+    "Command %s does not exist."
   ]
 }

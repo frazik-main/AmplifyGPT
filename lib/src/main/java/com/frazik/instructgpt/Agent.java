@@ -298,7 +298,11 @@ public class Agent {
             }
         }
         if (!found) {
-            this.history.addNewPrompt("system", String.format("Command %s does not exist.", toolId));
+            Prompt commandMissing = new Prompt.Builder("command_missing")
+                    .formatted(0, toolId)
+                    .withRole("system")
+                    .build();
+            this.history.addNewPrompt(commandMissing.getPrompt());
             return null;
         }
         return resp;
