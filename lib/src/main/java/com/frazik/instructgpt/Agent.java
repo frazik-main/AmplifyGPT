@@ -6,6 +6,7 @@ import com.frazik.instructgpt.auto.Cli;
 import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
 import com.frazik.instructgpt.memory.LocalMemory;
 import com.frazik.instructgpt.models.OpenAIModel;
+import com.frazik.instructgpt.prompts.Prompt;
 import com.frazik.instructgpt.prompts.PromptHistory;
 import com.frazik.instructgpt.response.Response;
 import com.frazik.instructgpt.response.Thought;
@@ -19,37 +20,29 @@ import org.json.JSONObject;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-import static com.frazik.instructgpt.Constants.*;
 @Slf4j
 public class Agent {
-    private String name;
-    private String description;
-    private List<String> goals;
-    private String model;
-    private Map<String, Object> subAgents;
-    private LocalMemory memory;
-    private List<String> constraints;
-    private List<String> evaluations;
-    private PromptHistory history;
-    private List<Tool> tools;
+    private final String name;
+    private final String description;
+    private final List<String> goals;
+    private final Map<String, Object> subAgents;
+    private final LocalMemory memory;
+    private final PromptHistory history;
+    private final List<Tool> tools;
     private Map<String, Object> stagingTool;
 
     private JsonNode stagingResponse;
-    private OpenAIModel openAIModel;
+    private final OpenAIModel openAIModel;
 
-    private String responseFormat;
+    private final String responseFormat;
 
     public Agent(String name, String description, List<String> goals, String model) {
         this.history = new PromptHistory();
         this.name = name;
         this.description = description != null ? description : "A personal assistant that responds exclusively in JSON";
         this.goals = goals != null ? goals : new ArrayList<>();
-        this.model = model;
         this.subAgents = new HashMap<>();
         this.memory = new LocalMemory(new OpenAIEmbeddingProvider());
-        this.constraints = new ArrayList<>(DEFAULT_CONSTRAINTS);
-        this.evaluations = new ArrayList<>(DEFAULT_EVALUATIONS);
         this.responseFormat = Constants.getDefaultResponseFormat();
         this.tools = Arrays.asList(new Browser(), new GoogleSearch());
         this.openAIModel = new OpenAIModel(model);
@@ -63,55 +56,84 @@ public class Agent {
     }
 
     private List<Map<String, String>> getFullPrompt(String userInput) {
+        List<Map<String, String>> prompt = new ArrayList<>();
+
+        // Build header prompt
         Map<String, String> header = buildPrompts("system", headerPrompt());
-        Map<String, String> dateTime = buildPrompts("system", "The current time and date is " + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss yyyy")));
-        List<Map<String, String>> prompt = new ArrayList<>(Arrays.asList(header, dateTime));
+        prompt.add(header);
+
+        // Build current date and time prompt
+        Prompt currentTimePrompt = new Prompt.Builder("current_time")
+                .withRole("system")
+                .formatted(0, ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss yyyy")))
+                .build();
+        prompt.add(currentTimePrompt.getPrompt());
+
+        // Retrieve relevant memory
         List<String> relevantMemory = memory.get(history.subListToString(Math.max(0, history.getSize() - 10), history.getSize()), 10);
+
         if (relevantMemory != null) {
-            // Add as many documents from memory as possible while staying under the token limit
             int tokenLimit = 2500;
             Map<String, String> context = null;
+
+            // Add memory documents while staying under token limit
             while (!relevantMemory.isEmpty()) {
                 String memoryStr = String.join("\n", relevantMemory);
                 context = buildPrompts("system", "This reminds you of these events from your past:\n" + memoryStr + "\n");
                 List<Map<String, String>> updatedPrompt = new ArrayList<>(prompt);
                 updatedPrompt.add(context);
                 int tokenCount = openAIModel.countTokens(updatedPrompt);
+
                 if (tokenCount < tokenLimit) {
                     break;
                 }
+
                 relevantMemory.remove(relevantMemory.size() - 1);
             }
+
             if (context != null) {
                 prompt.add(prompt.size() - 1, context);
             }
         }
+
+        // Add user input prompt
         List<Map<String, String>> userPrompt = new ArrayList<>();
         if (userInput != null && !userInput.isEmpty()) {
             userPrompt.add(buildPrompts("user", userInput));
         }
+
         List<Map<String, String>> newPrompt = new ArrayList<>(prompt.subList(0, 2));
         newPrompt.addAll(history.getValues());
+
         if(prompt.size() > 2) {
             newPrompt.addAll(prompt.subList(2, prompt.size()));
         }
+
         newPrompt.addAll(userPrompt);
         prompt = newPrompt;
+
+        // Ensure each prompt is not null
         for (Map<String, String> p : prompt) {
             assert p != null;
         }
-        int tokenLimit = openAIModel.getTokenLimit() - 1000; // 1000 reserved for response
+
+        int tokenLimit = openAIModel.getTokenLimit() - 1000;
         int tokenCount = openAIModel.countTokens(prompt);
-        while (history.getSize() > 1 && tokenCount > tokenLimit) { // keep at least 1 message from history
+
+        // Remove history messages to stay under token limit
+        while (history.getSize() > 1 && tokenCount > tokenLimit) {
             history.remove(0);
             prompt.remove(2);
             tokenCount = openAIModel.countTokens(prompt);
         }
+
         return prompt;
     }
 
+
     public Response chat() {
-        return chat(SEED_INPUT, false);
+        Prompt seedInput = new Prompt.Builder("seed").build();
+        return chat(seedInput.getContent(), false);
     }
 
     public Response chat(String message) {
@@ -131,10 +153,6 @@ public class Agent {
      * staging_response is a variable used in the chat function. It is used to store the response generated by a staging tool during a chat interaction. A staging tool is an external tool or process that can be run by the assistant to perform specific tasks or actions.
      * In the context of the chat function, if there is a staging tool available and it is run during the chat interaction, the response generated by the staging tool is stored in the staging_response variable. The stored response is later used for further processing, such as storing it in the assistant's memory along with other relevant information.
      * The staging_response variable is set to None initially and is assigned a value when a staging tool is run and produces a response.
-     *
-     * @param message
-     * @param runTool
-     * @return
      */
     public Response chat(String message, boolean runTool) {
         if (this.stagingTool != null) {
@@ -249,7 +267,10 @@ public class Agent {
 
     public Object runStagingTool() {
         if (!this.stagingTool.containsKey("name")) {
-            this.history.addNewPrompt("system", "Command name not provided. Make sure to follow the specified response format.");
+            Prompt noCommandPrompt = new Prompt.Builder("no_command")
+                    .withRole("system")
+                    .build();
+            this.history.addNewPrompt(noCommandPrompt.getPrompt());
             return null;
         }
         if (this.stagingTool.get("name").equals("task_complete")) {
@@ -258,7 +279,10 @@ public class Agent {
             }};
         }
         if (!this.stagingTool.containsKey("args")) {
-            this.history.addNewPrompt("system", "Command args not provided. Make sure to follow the specified response format.");
+            Prompt argsNotProvidedPrompt = new Prompt.Builder("arg_missing")
+                    .withRole("system")
+                    .build();
+            this.history.addNewPrompt(argsNotProvidedPrompt.getPrompt());
             return null;
         }
         String toolId = (String) this.stagingTool.get("name");
@@ -274,7 +298,11 @@ public class Agent {
             }
         }
         if (!found) {
-            this.history.addNewPrompt("system", String.format("Command %s does not exist.", toolId));
+            Prompt commandMissing = new Prompt.Builder("command_missing")
+                    .formatted(0, toolId)
+                    .withRole("system")
+                    .build();
+            this.history.addNewPrompt(commandMissing.getPrompt());
             return null;
         }
         return resp;
@@ -282,53 +310,47 @@ public class Agent {
 
     public void clearState() {
         history.clear();
-        //subAgents.clear();
+        subAgents.clear();
         memory.clear();
     }
 
     public String headerPrompt() {
-        ArrayList<String> prompt = new ArrayList<String>();
+        ArrayList<String> prompt = new ArrayList<>();
         prompt.add(personaPrompt());
         if (!goals.isEmpty()) {
             prompt.add(goalsPrompt());
         }
-        if (!constraints.isEmpty()) {
-            prompt.add(constraintsPrompt());
-        }
+        prompt.add(constraintsPrompt());
+
         if (tools != null && !tools.isEmpty()) {
             prompt.add(toolsPrompt());
         }
         prompt.add(resourcesPrompt());
-        if (!evaluations.isEmpty()) {
-            prompt.add(evaluationPrompt());
-        }
+        prompt.add(evaluationPrompt());
         prompt.add(this.responseFormat);
-        return String.join("\n", prompt) + "\n";
+        return newLineDelimited(prompt);
     }
 
     public String personaPrompt() {
-        return "You are " + name + ", " + description + ". " +
-                "Your decisions must always be made independently without " +
-                "seeking user assistance. Play to your strengths as an LLM and pursue " +
-                "simple strategies with no legal complications.;\n";
+        Prompt personaPrompt = new Prompt.Builder("persona")
+                .formatted(0, "name", "description")
+                .build();
+        return personaPrompt.getContent();
     }
 
     public String goalsPrompt() {
-        ArrayList<String> prompt = new ArrayList<String>();
+        ArrayList<String> prompt = new ArrayList<>();
         prompt.add("GOALS:");
         for (int i = 0; i < goals.size(); i++) {
             prompt.add((i + 1) + ". " + goals.get(i));
         }
-        return String.join("\n", prompt) + "\n";
+        return newLineDelimited(prompt);
     }
 
     public String constraintsPrompt() {
-        ArrayList<String> prompt = new ArrayList<String>();
-        prompt.add("Constraints:");
-        for (int i = 0; i < constraints.size(); i++) {
-            prompt.add((i + 1) + ". " + constraints.get(i));
-        }
-        return String.join("\n", prompt) + "\n";
+        Prompt constraintsPrompt = new Prompt.Builder("constraints")
+                .build();
+        return constraintsPrompt.getContent();
     }
 
     /**
@@ -365,29 +387,26 @@ public class Agent {
         JSONObject responseFormat = new JSONObject();
         responseFormat.put("success", "true");
         taskCompleteCommand.put("response_format", responseFormat);
-        prompt.add((this.tools.size() + 1) + ". " + taskCompleteCommand.toString());
-        return String.join("\n", prompt) + "\n";
+        prompt.add((this.tools.size() + 1) + ". " + taskCompleteCommand);
+        return newLineDelimited(prompt);
     }
 
     public String resourcesPrompt() {
-        List<String> prompt = new ArrayList<>();
-        prompt.add("Resources:");
-        prompt.add("1. Internet access for searches and information gathering.");
-        prompt.add("2. Long Term memory management.");
-        prompt.add("3. GPT-3.5 powered Agents for delegation of simple tasks.");
-        return String.join("\n", prompt) + "\n";
+        Prompt resourcesPrompt = new Prompt.Builder("resources")
+                .build();
+        return resourcesPrompt.getContent();
     }
 
     public String evaluationPrompt() {
-        List<String> prompt = new ArrayList<>();
-        prompt.add("Performance Evaluation:");
-        for (int i = 0; i < this.evaluations.size(); i++) {
-            String evaln = this.evaluations.get(i);
-            prompt.add((i + 1) + ". " + evaln);
-        }
-        return String.join("\n", prompt) + "\n";
+        Prompt evaluationPrompt = new Prompt.Builder("evaluation")
+                .delimited()
+                .build();
+        return evaluationPrompt.getContent();
     }
 
+    private static String newLineDelimited(List<String> prompt) {
+        return String.join("\n", prompt) + "\n";
+    }
 
     public void cli() {
         // implementation of the command-line interface for the agent

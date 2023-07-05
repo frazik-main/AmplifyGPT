@@ -11,13 +11,13 @@ import java.util.*;
 @Slf4j
 public class LocalMemory extends Memory {
 
-    private List<String> docs;
+    private final List<String> docs;
     private INDArray embs;
-    private EmbeddingProvider embeddingProvider;
+    private final EmbeddingProvider embeddingProvider;
 
     public LocalMemory(EmbeddingProvider embeddingProvider) {
         super();
-        this.docs = new ArrayList<String>();
+        this.docs = new ArrayList<>();
         this.embs = null;
         this.embeddingProvider = embeddingProvider;
     }
@@ -41,7 +41,7 @@ public class LocalMemory extends Memory {
     @Override
     public List<String> get(String query, int k) {
         if (this.embs == null) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
         double[] embeddings = embeddingProvider.get(query);
         INDArray scores;
@@ -56,18 +56,6 @@ public class LocalMemory extends Memory {
         }
         return Arrays.asList(results);
     }
-
-    private Map<String, Object> serializeEmbs() {
-        if (this.embs == null) {
-            return null;
-        }
-        Map<String, Object> result = new HashMap<>();
-        result.put("dtype", this.embs.data().dataType().name());
-        result.put("data", this.embs.data().asFloat());
-        result.put("shape", this.embs.shape());
-        return result;
-    }
-
     @Override
     public void clear() {
         this.docs.clear();

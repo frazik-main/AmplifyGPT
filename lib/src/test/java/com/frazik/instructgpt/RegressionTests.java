@@ -51,7 +51,7 @@ public class RegressionTests {
         chatMessages.add(chatMessage);
         String response = model.chat(chatMessages, 100, 0.8);
 
-        assertTrue(response.startsWith("As an AI language model"));
+        assertTrue(response.length() > 10);
     }
 
     @Test

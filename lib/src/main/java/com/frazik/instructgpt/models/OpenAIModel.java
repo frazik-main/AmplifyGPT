@@ -18,9 +18,9 @@ import java.util.Map;
 
 public class OpenAIModel extends Model {
     private static final Logger logger = LoggerFactory.getLogger(OpenAIModel.class);
-    private String model;
-    private String apiKey;
-    private Encoding encoding;
+    private final String model;
+    private final String apiKey;
+    private final Encoding encoding;
 
     public OpenAIModel(String model) {
         this.model = model;
@@ -71,7 +71,6 @@ public class OpenAIModel extends Model {
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
-                    continue;
                 } else {
                     throw new RuntimeException(e);
                 }
