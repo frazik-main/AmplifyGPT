@@ -41,6 +41,10 @@ public class PromptHistory {
         this.values.add(PromptUtils.buildPrompts(role, content));
     }
 
+    public void addNewPrompt(Map<String, String> prompt) {
+        this.values.add(prompt);
+    }
+
     public static String listToString(List<Map<String, String>> values) {
         StringBuilder sb = new StringBuilder();
         sb.append("[\n");

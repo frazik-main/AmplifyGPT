@@ -1,8 +1,8 @@
 package com.frazik.instructgpt.response;
 
 public class Response {
-    private Thought thoughts;
-    private String command;
+    private final Thought thoughts;
+    private final String command;
 
     public Response(Thought thoughts, String command) {
         this.thoughts = thoughts;

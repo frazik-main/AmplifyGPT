@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GoogleSearch extends Tool {
-    private String googleApiKey = System.getenv("GOOGLE_API_KEY");
-    private String googleCxId = System.getenv("GOOGLE_CX_ID");
+    private final String googleApiKey = System.getenv("GOOGLE_API_KEY");
+    private final String googleCxId = System.getenv("GOOGLE_CX_ID");
 
     @Override
     public Map<String, String> getArgs() {
