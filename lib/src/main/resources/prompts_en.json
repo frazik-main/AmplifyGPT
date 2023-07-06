@@ -48,7 +48,7 @@
   "no_approve": [
     "User did not approve running %s. "
   ],
-  "no_approve_replay": [
+  "no_approve_reply": [
     "Assistant reply: %s\nResult: (User did not approve)\nHuman Feedback: %s"
   ],
   "response": [
