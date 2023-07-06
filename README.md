@@ -1,23 +1,25 @@
 
 <H1>
 <p align="center">
-  InstructGPT
+  AmplifyGPT
 </p>
 </H1>
 <p align="center">
     <b>Customizable Auto-GPT library for Java</b>
 </p>
 
-InstructGPT is a Java library similar to [Auto-GPT](https://github.com/Significant-Gravitas/Auto-GPT) with customization and i18n support in mind.
+AmplifyGPT is a Java library version of [Auto-GPT](https://github.com/Significant-Gravitas/Auto-GPT) with customization 
+and i18n support in mind. It can help you easily incorporate Auto-GPT like functionality into your new or existing project.
 
 ## Feature roadmap
 
-*  **Use InstructGTP in your Java project** - Make your existing project more intelligent with Auto-GPT like features.
-*  **Customization** - Customization and extensibility is the core of InstructGPT. You can customize the way it works.
-*  **Internationalization** - InstructGPT is i18n ready. You can use it in any language you want.
-*  **GPT 3.5 support** - We are developing InstructGPT with GPT 3.5. You can use it with GPT 3.5 or GPT 4.
-*  **Prompt optimization** - InstructGPT uses prompt optimization to consume fewer tokens.
-*  **Multi-model support** - InstructGPT supports multiple models. You can use any model you want.
+- 🧠 Amplify JVM based project: Make your existing project more intelligent.
+- :zap: Customization: Customization and extensibility is the core of AmplifyGPT.
+- 🌐 Internationalization: AmplifyGPT is i18n ready. You can use it in any language you want.
+- :loop: GPT 3.5 and GPT 4 support: AmplifyGPT supports both GPT 3.5 and GPT 4.
+- 🗃️ Multi-model support: Architected to supports multiple models (GPTx, Bard, LLaMA, StableLM ...).
+- :watch: Prompt optimization: Prompt optimization to consume fewer tokens.
+- :cyclone: Support Java 1.8 and above: For new and older projects.
 
 ## Installation
 
@@ -46,3 +48,9 @@ export OPENAI_API_KEY=<your-openai-api-key>
 - Java 1.8+
 - [An OpenAI API Key](https://platform.openai.com/account/api-keys)
 - Windows/Linux/Mac
+
+## Want to contribute?
+
+- We need A LOT of Help!
+- You want to contribute to the project?
+- Please open an issue or a PR if you'd like to contribute.
