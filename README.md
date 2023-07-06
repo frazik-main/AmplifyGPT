@@ -48,3 +48,10 @@ export OPENAI_API_KEY=<your-openai-api-key>
 - Java 1.8+
 - [An OpenAI API Key](https://platform.openai.com/account/api-keys)
 - Windows/Linux/Mac
+
+## Want to contribute?
+
+- We need A LOT of Help!
+- You think language models are future of programming?
+- You want to contribute to the project?
+- Please open an issue or a PR if you'd like to contribute.
