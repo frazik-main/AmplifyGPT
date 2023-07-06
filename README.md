@@ -17,7 +17,7 @@ and i18n support in mind. It can help you easily incorporate Auto-GPT like funct
 - :zap: Customization: Customization and extensibility is the core of AmplifyGPT.
 - 🌐 Internationalization: AmplifyGPT is i18n ready. You can use it in any language you want.
 - :loop: GPT 3.5 and GPT 4 support: AmplifyGPT supports both GPT 3.5 and GPT 4.
-- 🗃️ Multi-model support: Architected to supports multiple non OpenAI models (Bard, LLaMA, StableLM ...).
+- 🗃️ Multi-model support: Architected to supports multiple models (GPTx, Bard, LLaMA, StableLM ...).
 - :watch: Prompt optimization: Prompt optimization to consume fewer tokens.
 - :cyclone: Support Java 8 and above: For new and older projects.
 
