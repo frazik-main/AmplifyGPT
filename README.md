@@ -13,7 +13,7 @@ and i18n support in mind. It can help you easily incorporate Auto-GPT like funct
 
 ## Feature roadmap
 
-- 🧠 Amplify JVM based project: Make your existing project more intelligent with Auto-GPT like features.
+- 🧠 Amplify JVM based project: Make your existing project more intelligent.
 - :zap: Customization: Customization and extensibility is the core of AmplifyGPT.
 - 🌐 Internationalization: AmplifyGPT is i18n ready. You can use it in any language you want.
 - :loop: GPT 3.5 and GPT 4 support: AmplifyGPT supports both GPT 3.5 and GPT 4.
