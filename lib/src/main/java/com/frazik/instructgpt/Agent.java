@@ -79,7 +79,11 @@ public class Agent {
             // Add memory documents while staying under token limit
             while (!relevantMemory.isEmpty()) {
                 String memoryStr = String.join("\n", relevantMemory);
-                context = buildPrompts("system", "This reminds you of these events from your past:\n" + memoryStr + "\n");
+                Prompt memoryPrompt = new Prompt.Builder("reminds_past")
+                        .withRole("system")
+                        .formatted(0, memoryStr)
+                        .build();
+                context = memoryPrompt.getPrompt();
                 List<Map<String, String>> updatedPrompt = new ArrayList<>(prompt);
                 updatedPrompt.add(context);
                 int tokenCount = openAIModel.countTokens(updatedPrompt);
@@ -161,10 +165,22 @@ public class Agent {
                     message = "";
                 }
                 Object output = this.runStagingTool();
-                this.memory.add(String.format("Assistant reply: %s\nResult: %s\nHuman Feedback: %s", this.stagingResponse, output, message), null);
+                Prompt humanFeedbackPrompt = new Prompt.Builder("human_feedback")
+                        .withRole("system")
+                        .formatted(0, this.stagingResponse, output, message)
+                        .build();
+                this.memory.add(humanFeedbackPrompt.getContent(), null);
             } else {
-                this.history.addNewPrompt("system", String.format("User did not approve running %s.", this.stagingTool));
-                this.memory.add(String.format("Assistant reply: %s\nResult: (User did not approve)\nHuman Feedback: %s", this.stagingResponse, message), null);
+                Prompt noApprovePrompt = new Prompt.Builder("no_approve")
+                        .withRole("system")
+                        .formatted(0, this.stagingTool)
+                        .build();
+                this.history.addNewPrompt(noApprovePrompt.getPrompt());
+                Prompt noApproveReplayPrompt = new Prompt.Builder("no_approve_reply")
+                        .withRole("system")
+                        .formatted(0, this.stagingResponse, message)
+                        .build();
+                this.memory.add(noApproveReplayPrompt.getContent(), null);
             }
             this.stagingTool = null;
             this.stagingResponse = null;
@@ -293,7 +309,11 @@ public class Agent {
             if (tool.getId().equals(toolId)) {
                 found = true;
                 resp = tool.run(args);
-                this.history.addNewPrompt("system", String.format("Response from %s:\n%s", toolId, new Gson().toJson(resp)));
+                Prompt responsePrompt = new Prompt.Builder("response")
+                        .formatted(0, toolId,  new Gson().toJson(resp))
+                        .withRole("system")
+                        .build();
+                this.history.addNewPrompt(responsePrompt.getPrompt());
                 break;
             }
         }

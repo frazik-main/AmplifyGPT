@@ -23,11 +23,6 @@ public class Prompt {
     public String getContent() {
         return content;
     }
-
-    public String getRole() {
-        return role;
-    }
-
     public Map<String, String> getPrompt() {
         Map<String, String> prompt = new HashMap<>();
         prompt.put("role", role);
