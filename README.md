@@ -13,14 +13,13 @@ and i18n support in mind. It can help you easily incorporate Auto-GPT like funct
 
 ## Feature roadmap
 
-- 🧠 Use InstructGTP JVM based project: Make your existing project more intelligent with Auto-GPT like features.
-* **Customization** - Customization and extensibility is the core of InstructGPT. You can customize the way it works.
+- 🧠 Amplify JVM based project: Make your existing project more intelligent with Auto-GPT like features.
+- :zap: Customization: Customization and extensibility is the core of AmplifyGPT.
 - 🌐 Internationalization: AmplifyGPT is i18n ready. You can use it in any language you want.
 - :loop: GPT 3.5 and GPT 4 support: AmplifyGPT supports both GPT 3.5 and GPT 4.
-- 🗃️ Multi-model support: InstructGPT is architected to supports multiple models (Bard, LLaMA for example).
-* **Multi-language support** - Multiple languages support. Translate one JSON file and you are good to go.
-- :watch: Prompt optimization** - Prompt optimization to consume fewer tokens.
-* **Support Java 8 and above** - For old and new projects.
+- 🗃️ Multi-model support: Architected to supports multiple non OpenAI models (Bard, LLaMA, StableLM ...).
+- :watch: Prompt optimization: Prompt optimization to consume fewer tokens.
+- :cyclone: Support Java 8 and above: For new and older projects.
 
 ## Installation
 
