@@ -196,32 +196,18 @@ public class Agent {
         this.history.addNewPrompt("assistant", resp);
 
         try {
-            JsonNode parsedResp = this.loadJson(resp);
+            Response response = Response.getResponseFromRaw(resp);
+            if (response != null) {
+                JsonNode parsedResp = response.getParsedResp();
+                String commandArgs = parsedResp.get("command").get("args").asText();
+                String commandName = parsedResp.get("command").get("name").asText();
 
-            if (parsedResp.has("name")) {
-                parsedResp = mapper.createObjectNode().set("command", parsedResp);
-            }
+                this.stagingTool = new HashMap<>();
+                this.stagingTool.put("args", commandArgs);
+                this.stagingTool.put("name", commandName);
 
-            String commandArgs = parsedResp.get("command").get("args").asText();
-            String commandName = parsedResp.get("command").get("name").asText();
-
-            this.stagingTool = new HashMap<>();
-            this.stagingTool.put("args", commandArgs);
-            this.stagingTool.put("name", commandName);
-
-            this.stagingResponse = parsedResp;
-            // Parse the 'thoughts' and 'command' parts of the response into objects
-            if (parsedResp.has("thoughts") && parsedResp.has("command")) {
-                JsonNode thoughtsNode = parsedResp.get("thoughts");
-                Thought thoughts = new Thought(
-                        thoughtsNode.get("text").asText(),
-                        thoughtsNode.get("reasoning").asText(),
-                        thoughtsNode.get("plan").asText(),
-                        thoughtsNode.get("criticism").asText(),
-                        thoughtsNode.get("speak").asText()
-                );
-                JsonNode commandNode = parsedResp.get("command");
-                return new Response(thoughts, commandNode.get("name").asText());
+                this.stagingResponse = parsedResp;
+                return response;
             }
 
         } catch (Exception e) {
@@ -229,36 +215,6 @@ public class Agent {
         }
 
         return null;
-    }
-
-    private static final ObjectMapper mapper = new ObjectMapper();
-
-    private JsonNode loadJson(String s) throws Exception {
-        if (!s.contains("{") || !s.contains("}")) {
-            throw new Exception();
-        }
-        try {
-            return mapper.readTree(s);
-        } catch (Exception e1) {
-            int startIndex = s.indexOf("{");
-            int endIndex = s.indexOf("}") + 1;
-            String subString = s.substring(startIndex, endIndex);
-            try {
-                return mapper.readTree(subString);
-            } catch (Exception e2) {
-                subString += "}";
-                try {
-                    return mapper.readTree(subString);
-                } catch (Exception e3) {
-                    subString = subString.replace("'", "\"");
-                    try {
-                        return mapper.readTree(subString);
-                    } catch (Exception e4) {
-                        throw new Exception();
-                    }
-                }
-            }
-        }
     }
 
     public String lastUserInput() {
