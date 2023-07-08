@@ -7,7 +7,6 @@ import com.theokanning.openai.service.OpenAiService;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class OpenAIEmbeddingProvider extends EmbeddingProvider {
     public static final String OPENAI_API_KEY = "OPENAI_API_KEY";

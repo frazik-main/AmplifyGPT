@@ -3,8 +3,16 @@ package com.frazik.instructgpt.prompts;
 import com.google.gson.Gson;
 import org.openqa.selenium.json.TypeToken;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Prompt {
     private final String role;
@@ -57,6 +65,11 @@ public class Prompt {
             // Format the prompt
             prompts.set(i, String.format(prompts.get(i), args));
             return this;
+        }
+
+        public Builder formattedWithCurrentTime(int i) {
+            String currentTime  = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss yyyy"));
+            return formatted(i, currentTime);
         }
         public Builder withRole(String role) {
             this.role = role;

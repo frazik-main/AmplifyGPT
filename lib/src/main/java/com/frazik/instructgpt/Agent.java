@@ -1,7 +1,6 @@
 package com.frazik.instructgpt;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.frazik.instructgpt.auto.Cli;
 import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
 import com.frazik.instructgpt.memory.LocalMemory;
@@ -9,7 +8,6 @@ import com.frazik.instructgpt.models.OpenAIModel;
 import com.frazik.instructgpt.prompts.Prompt;
 import com.frazik.instructgpt.prompts.PromptHistory;
 import com.frazik.instructgpt.response.Response;
-import com.frazik.instructgpt.response.Thought;
 import com.frazik.instructgpt.tools.Browser;
 import com.frazik.instructgpt.tools.GoogleSearch;
 import com.frazik.instructgpt.tools.Tool;
@@ -25,23 +23,18 @@ public class Agent {
     private final String name;
     private final String description;
     private final List<String> goals;
-    private final Map<String, Object> subAgents;
     private final LocalMemory memory;
     private final PromptHistory history;
     private final List<Tool> tools;
     private Map<String, Object> stagingTool;
-
     private JsonNode stagingResponse;
     private final OpenAIModel openAIModel;
-
     private final String responseFormat;
-
     public Agent(String name, String description, List<String> goals, String model) {
         this.history = new PromptHistory();
         this.name = name;
-        this.description = description != null ? description : "A personal assistant that responds exclusively in JSON";
-        this.goals = goals != null ? goals : new ArrayList<>();
-        this.subAgents = new HashMap<>();
+        this.description = description;
+        this.goals = goals;
         this.memory = new LocalMemory(new OpenAIEmbeddingProvider());
         this.responseFormat = Constants.getDefaultResponseFormat();
         this.tools = Arrays.asList(new Browser(), new GoogleSearch());
@@ -65,7 +58,7 @@ public class Agent {
         // Build current date and time prompt
         Prompt currentTimePrompt = new Prompt.Builder("current_time")
                 .withRole("system")
-                .formatted(0, ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss yyyy")))
+                .formattedWithCurrentTime(0)
                 .build();
         prompt.add(currentTimePrompt.getPrompt());
 
@@ -195,23 +188,18 @@ public class Agent {
         this.history.addNewPrompt("user", message);
         this.history.addNewPrompt("assistant", resp);
 
-        try {
-            Response response = Response.getResponseFromRaw(resp);
-            if (response != null) {
-                JsonNode parsedResp = response.getParsedResp();
-                String commandArgs = parsedResp.get("command").get("args").asText();
-                String commandName = parsedResp.get("command").get("name").asText();
+        Response response = Response.getResponseFromRaw(resp);
+        if (response != null) {
+            JsonNode parsedResp = response.getParsedResp();
+            String commandArgs = parsedResp.get("command").get("args").asText();
+            String commandName = parsedResp.get("command").get("name").asText();
 
-                this.stagingTool = new HashMap<>();
-                this.stagingTool.put("args", commandArgs);
-                this.stagingTool.put("name", commandName);
+            this.stagingTool = new HashMap<>();
+            this.stagingTool.put("args", commandArgs);
+            this.stagingTool.put("name", commandName);
 
-                this.stagingResponse = parsedResp;
-                return response;
-            }
-
-        } catch (Exception e) {
-            log.error("Error parsing response: " + resp, e);
+            this.stagingResponse = parsedResp;
+            return response;
         }
 
         return null;
@@ -286,7 +274,6 @@ public class Agent {
 
     public void clearState() {
         history.clear();
-        subAgents.clear();
         memory.clear();
     }
 
@@ -309,7 +296,7 @@ public class Agent {
 
     public String personaPrompt() {
         Prompt personaPrompt = new Prompt.Builder("persona")
-                .formatted(0, "name", "description")
+                .formatted(0, name, description)
                 .build();
         return personaPrompt.getContent();
     }

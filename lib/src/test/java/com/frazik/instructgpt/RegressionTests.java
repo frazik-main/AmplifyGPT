@@ -2,8 +2,8 @@ package com.frazik.instructgpt;
 
 import com.frazik.instructgpt.embedding.EmbeddingProvider;
 import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
-import com.frazik.instructgpt.memory.Memory;
 import com.frazik.instructgpt.memory.LocalMemory;
+import com.frazik.instructgpt.memory.Memory;
 import com.frazik.instructgpt.models.Model;
 import com.frazik.instructgpt.models.OpenAIModel;
 import com.frazik.instructgpt.response.Response;
