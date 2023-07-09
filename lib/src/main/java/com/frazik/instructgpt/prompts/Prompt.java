@@ -1,5 +1,8 @@
 package com.frazik.instructgpt.prompts;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import org.openqa.selenium.json.TypeToken;
 
@@ -17,10 +20,20 @@ import java.util.Map;
 public class Prompt {
     private final String role;
     private final String content;
-    private static Map<String, List<String>> promptsBundle = new HashMap<>();
+    private static final Map<String, List<String>> promptsBundle;
+    private static final Map<String, Map<String, String>> defaultResponsesJson;
+
+    private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+
 
     static {
-        readPromptJson();
+        // Use generic types to prepare for future expansion
+        TypeToken<Map<String, List<String>>> promptsToken = new TypeToken<Map<String, List<String>>>() {};
+        promptsBundle = readPromptJson(promptsToken, "prompts_en.json");
+        // Use generic types to prepare for future expansion
+        TypeToken<Map<String, Map<String, String>>> defaultResponsesToken =
+                new TypeToken<Map<String, Map<String, String>>>() {};
+        defaultResponsesJson = readPromptJson(defaultResponsesToken, "default_response_en.json");
     }
     
     public Prompt(String role, String content) {
@@ -30,6 +43,14 @@ public class Prompt {
 
     public String getContent() {
         return content;
+    }
+
+    public static String getDefaultResponse() {
+        try {
+            return objectMapper.writeValueAsString(defaultResponsesJson);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
     public Map<String, String> getPrompt() {
         Map<String, String> prompt = new HashMap<>();
@@ -82,19 +103,18 @@ public class Prompt {
         }
     }
 
-    private static void readPromptJson() {
+    private static <T> T readPromptJson(TypeToken<T> token, String jsonFileName) {
         try {
-            InputStream inputStream = Prompt.class.getClassLoader().getResourceAsStream("prompts_en.json");
+            InputStream inputStream = Prompt.class.getClassLoader().getResourceAsStream(jsonFileName);
 
             if (inputStream == null) {
-                throw new FileNotFoundException("prompts_en.json file not found.");
+                throw new FileNotFoundException(jsonFileName + " file not found.");
             }
 
             InputStreamReader reader = new InputStreamReader(inputStream);
-            TypeToken<Map<String, List<String>>> token = new TypeToken<Map<String, List<String>>>() {};
-            promptsBundle = new Gson().fromJson(reader, token.getType());
+            return new Gson().fromJson(reader, token.getType());
         } catch (IOException e) {
-            throw new RuntimeException("Error reading prompts_en.json file.", e);
+            throw new RuntimeException("Error reading " + jsonFileName, e);
         }
     }
 }

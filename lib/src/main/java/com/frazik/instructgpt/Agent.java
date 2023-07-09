@@ -15,8 +15,6 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 @Slf4j
 public class Agent {
@@ -29,14 +27,12 @@ public class Agent {
     private Map<String, Object> stagingTool;
     private JsonNode stagingResponse;
     private final OpenAIModel openAIModel;
-    private final String responseFormat;
     public Agent(String name, String description, List<String> goals, String model) {
         this.history = new PromptHistory();
         this.name = name;
         this.description = description;
         this.goals = goals;
         this.memory = new LocalMemory(new OpenAIEmbeddingProvider());
-        this.responseFormat = Constants.getDefaultResponseFormat();
         this.tools = Arrays.asList(new Browser(), new GoogleSearch());
         this.openAIModel = new OpenAIModel(model);
     }
@@ -290,10 +286,17 @@ public class Agent {
         }
         prompt.add(resourcesPrompt());
         prompt.add(evaluationPrompt());
-        prompt.add(this.responseFormat);
+        prompt.add(defaultResponsePrompt());
         return newLineDelimited(prompt);
     }
 
+    public String defaultResponsePrompt() {
+        String defaultResponse = Prompt.getDefaultResponse();
+        Prompt defaultResponsePrompt = new Prompt.Builder("use_only_defined_format")
+                .formatted(0, defaultResponse)
+                .build();
+        return defaultResponsePrompt.getContent();
+    }
     public String personaPrompt() {
         Prompt personaPrompt = new Prompt.Builder("persona")
                 .formatted(0, name, description)
@@ -314,6 +317,19 @@ public class Agent {
         Prompt constraintsPrompt = new Prompt.Builder("constraints")
                 .build();
         return constraintsPrompt.getContent();
+    }
+
+    public String resourcesPrompt() {
+        Prompt resourcesPrompt = new Prompt.Builder("resources")
+                .build();
+        return resourcesPrompt.getContent();
+    }
+
+    public String evaluationPrompt() {
+        Prompt evaluationPrompt = new Prompt.Builder("evaluation")
+                .delimited()
+                .build();
+        return evaluationPrompt.getContent();
     }
 
     /**
@@ -352,19 +368,6 @@ public class Agent {
         taskCompleteCommand.put("response_format", responseFormat);
         prompt.add((this.tools.size() + 1) + ". " + taskCompleteCommand);
         return newLineDelimited(prompt);
-    }
-
-    public String resourcesPrompt() {
-        Prompt resourcesPrompt = new Prompt.Builder("resources")
-                .build();
-        return resourcesPrompt.getContent();
-    }
-
-    public String evaluationPrompt() {
-        Prompt evaluationPrompt = new Prompt.Builder("evaluation")
-                .delimited()
-                .build();
-        return evaluationPrompt.getContent();
     }
 
     private static String newLineDelimited(List<String> prompt) {

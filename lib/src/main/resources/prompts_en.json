@@ -53,5 +53,8 @@
   ],
   "response": [
     "Response from %s:\n%s"
+  ],
+  "use_only_defined_format" : [
+    "You should only respond in JSON format as described below \nResponse Format: \n%s\nEnsure the response can be parsed by Java JSON ObjectMapper\n\n"
   ]
 }
