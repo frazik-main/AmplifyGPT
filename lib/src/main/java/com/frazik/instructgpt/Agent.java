@@ -1,7 +1,6 @@
 package com.frazik.instructgpt;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.frazik.instructgpt.auto.Cli;
 import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
@@ -10,7 +9,6 @@ import com.frazik.instructgpt.models.OpenAIModel;
 import com.frazik.instructgpt.prompts.Prompt;
 import com.frazik.instructgpt.prompts.PromptHistory;
 import com.frazik.instructgpt.response.Response;
-import com.frazik.instructgpt.response.Thought;
 import com.frazik.instructgpt.tools.Browser;
 import com.frazik.instructgpt.tools.GoogleSearch;
 import com.frazik.instructgpt.tools.Tool;
@@ -19,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -28,25 +24,18 @@ public class Agent {
     private final String name;
     private final String description;
     private final List<String> goals;
-    private final Map<String, Object> subAgents;
     private final LocalMemory memory;
     private final PromptHistory history;
     private final List<Tool> tools;
     private Map<String, Object> stagingTool;
-
     private JsonNode stagingResponse;
     private final OpenAIModel openAIModel;
-
-    private final String responseFormat;
-
     public Agent(String name, String description, List<String> goals, String model) {
         this.history = new PromptHistory();
         this.name = name;
-        this.description = description != null ? description : "A personal assistant that responds exclusively in JSON";
-        this.goals = goals != null ? goals : new ArrayList<>();
-        this.subAgents = new HashMap<>();
+        this.description = description;
+        this.goals = goals;
         this.memory = new LocalMemory(new OpenAIEmbeddingProvider());
-        this.responseFormat = Constants.getDefaultResponseFormat();
         this.tools = Arrays.asList(new Browser(), new GoogleSearch());
         this.openAIModel = new OpenAIModel(model);
     }
@@ -68,7 +57,7 @@ public class Agent {
         // Build current date and time prompt
         Prompt currentTimePrompt = new Prompt.Builder("current_time")
                 .withRole("system")
-                .formatted(0, ZonedDateTime.now().format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss yyyy")))
+                .formattedWithCurrentTime(0)
                 .build();
         prompt.add(currentTimePrompt.getPrompt());
 
@@ -198,16 +187,12 @@ public class Agent {
         this.history.addNewPrompt("user", message);
         this.history.addNewPrompt("assistant", resp);
 
-        try {
-            JsonNode parsedResp = this.loadJson(resp);
-
-            if (parsedResp.has("name")) {
-                parsedResp = mapper.createObjectNode().set("command", parsedResp);
-            }
+        Response response = Response.getResponseFromRaw(resp);
+        if (response != null) {
+            JsonNode parsedResp = response.getParsedResp();
 
             JsonNode commandArgsNode = parsedResp.get("command").get("args");
             String commandArgs = commandArgsNode.toString();
-
             String commandName = parsedResp.get("command").get("name").asText();
 
             this.stagingTool = new HashMap<>();
@@ -215,55 +200,10 @@ public class Agent {
             this.stagingTool.put("name", commandName);
 
             this.stagingResponse = parsedResp;
-            // Parse the 'thoughts' and 'command' parts of the response into objects
-            if (parsedResp.has("thoughts") && parsedResp.has("command")) {
-                JsonNode thoughtsNode = parsedResp.get("thoughts");
-                Thought thoughts = new Thought(
-                        thoughtsNode.get("text").asText(),
-                        thoughtsNode.get("reasoning").asText(),
-                        thoughtsNode.get("plan").asText(),
-                        thoughtsNode.get("criticism").asText(),
-                        thoughtsNode.get("speak").asText()
-                );
-                JsonNode commandNode = parsedResp.get("command");
-                return new Response(thoughts, commandNode.get("name").asText());
-            }
-
-        } catch (Exception e) {
-            log.error("Error parsing response: " + resp, e);
+            return response;
         }
 
         return null;
-    }
-
-    private static final ObjectMapper mapper = new ObjectMapper();
-
-    private JsonNode loadJson(String s) throws Exception {
-        if (!s.contains("{") || !s.contains("}")) {
-            throw new Exception();
-        }
-        try {
-            return mapper.readTree(s);
-        } catch (Exception e1) {
-            int startIndex = s.indexOf("{");
-            int endIndex = s.indexOf("}") + 1;
-            String subString = s.substring(startIndex, endIndex);
-            try {
-                return mapper.readTree(subString);
-            } catch (Exception e2) {
-                subString += "}";
-                try {
-                    return mapper.readTree(subString);
-                } catch (Exception e3) {
-                    subString = subString.replace("'", "\"");
-                    try {
-                        return mapper.readTree(subString);
-                    } catch (Exception e4) {
-                        throw new Exception();
-                    }
-                }
-            }
-        }
     }
 
     public String lastUserInput() {
@@ -343,7 +283,6 @@ public class Agent {
 
     public void clearState() {
         history.clear();
-        subAgents.clear();
         memory.clear();
     }
 
@@ -360,13 +299,20 @@ public class Agent {
         }
         prompt.add(resourcesPrompt());
         prompt.add(evaluationPrompt());
-        prompt.add(this.responseFormat);
+        prompt.add(defaultResponsePrompt());
         return newLineDelimited(prompt);
     }
 
+    public String defaultResponsePrompt() {
+        String defaultResponse = Prompt.getDefaultResponse();
+        Prompt defaultResponsePrompt = new Prompt.Builder("use_only_defined_format")
+                .formatted(0, defaultResponse)
+                .build();
+        return defaultResponsePrompt.getContent();
+    }
     public String personaPrompt() {
         Prompt personaPrompt = new Prompt.Builder("persona")
-                .formatted(0, "name", "description")
+                .formatted(0, name, description)
                 .build();
         return personaPrompt.getContent();
     }
@@ -384,6 +330,19 @@ public class Agent {
         Prompt constraintsPrompt = new Prompt.Builder("constraints")
                 .build();
         return constraintsPrompt.getContent();
+    }
+
+    public String resourcesPrompt() {
+        Prompt resourcesPrompt = new Prompt.Builder("resources")
+                .build();
+        return resourcesPrompt.getContent();
+    }
+
+    public String evaluationPrompt() {
+        Prompt evaluationPrompt = new Prompt.Builder("evaluation")
+                .delimited()
+                .build();
+        return evaluationPrompt.getContent();
     }
 
     /**
@@ -422,19 +381,6 @@ public class Agent {
         taskCompleteCommand.put("response_format", responseFormat);
         prompt.add((this.tools.size() + 1) + ". " + taskCompleteCommand);
         return newLineDelimited(prompt);
-    }
-
-    public String resourcesPrompt() {
-        Prompt resourcesPrompt = new Prompt.Builder("resources")
-                .build();
-        return resourcesPrompt.getContent();
-    }
-
-    public String evaluationPrompt() {
-        Prompt evaluationPrompt = new Prompt.Builder("evaluation")
-                .delimited()
-                .build();
-        return evaluationPrompt.getContent();
     }
 
     private static String newLineDelimited(List<String> prompt) {

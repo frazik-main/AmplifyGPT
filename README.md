@@ -13,13 +13,13 @@ and i18n support in mind. It can help you easily incorporate Auto-GPT like funct
 
 ## Feature roadmap
 
-- 🧠 Amplify JVM based project: Make your existing project more intelligent.
+- 🧠 Amplify JVM based project: Make your new or existing project more intelligent.
 - :zap: Customization: Customization and extensibility is the core of AmplifyGPT.
 - 🌐 Internationalization: AmplifyGPT is i18n ready. You can use it in any language you want.
 - :loop: GPT 3.5 and GPT 4 support: AmplifyGPT supports both GPT 3.5 and GPT 4.
 - 🗃️ Multi-model support: Architected to supports multiple models (GPTx, Bard, LLaMA, StableLM ...).
 - :watch: Prompt optimization: Prompt optimization to consume fewer tokens.
-- :cyclone: Support Java 1.8 and above: For new and older projects.
+- :cyclone: Support Java 1.8 and above: For maximum compability.
 
 ## Installation
 
