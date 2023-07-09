@@ -1,0 +1,13 @@
+{
+  "thoughts" : {
+    "reasoning" : "reasoning",
+    "speak" : "thoughts summary to say to user",
+    "text" : "thought",
+    "criticism" : "constructive self-criticism",
+    "plan" : "- short bulleted\n- list that conveys\n- long-term plan"
+  },
+  "command" : {
+    "args" : "{\"arg name\": \"value\"}",
+    "name" : "command name"
+  }
+}
