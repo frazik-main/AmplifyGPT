@@ -1,6 +1,7 @@
 package com.frazik.instructgpt;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.frazik.instructgpt.auto.Cli;
 import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
@@ -30,6 +31,7 @@ public class Agent {
     private Map<String, Object> stagingTool;
     private JsonNode stagingResponse;
     private final OpenAIModel openAIModel;
+    private static final ObjectMapper mapper = new ObjectMapper();
     public Agent(String name, String description, List<String> goals, String model) {
         this.history = new PromptHistory();
         this.name = name;
