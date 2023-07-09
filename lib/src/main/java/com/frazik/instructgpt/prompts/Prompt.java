@@ -22,9 +22,7 @@ public class Prompt {
     private final String content;
     private static final Map<String, List<String>> promptsBundle;
     private static final Map<String, Map<String, String>> defaultResponsesJson;
-
     private static final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-
 
     static {
         // Use generic types to prepare for future expansion
