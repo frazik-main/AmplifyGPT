@@ -1,6 +1,8 @@
 package com.frazik.instructgpt;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.frazik.instructgpt.auto.Cli;
 import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
 import com.frazik.instructgpt.memory.LocalMemory;
@@ -15,7 +17,9 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.*;
+
 @Slf4j
 public class Agent {
     private final String name;
@@ -27,6 +31,7 @@ public class Agent {
     private Map<String, Object> stagingTool;
     private JsonNode stagingResponse;
     private final OpenAIModel openAIModel;
+    private static final ObjectMapper mapper = new ObjectMapper();
     public Agent(String name, String description, List<String> goals, String model) {
         this.history = new PromptHistory();
         this.name = name;
@@ -98,7 +103,7 @@ public class Agent {
         List<Map<String, String>> newPrompt = new ArrayList<>(prompt.subList(0, 2));
         newPrompt.addAll(history.getValues());
 
-        if(prompt.size() > 2) {
+        if (prompt.size() > 2) {
             newPrompt.addAll(prompt.subList(2, prompt.size()));
         }
 
@@ -187,7 +192,9 @@ public class Agent {
         Response response = Response.getResponseFromRaw(resp);
         if (response != null) {
             JsonNode parsedResp = response.getParsedResp();
-            String commandArgs = parsedResp.get("command").get("args").asText();
+
+            JsonNode commandArgsNode = parsedResp.get("command").get("args");
+            String commandArgs = commandArgsNode.toString();
             String commandName = parsedResp.get("command").get("name").asText();
 
             this.stagingTool = new HashMap<>();
@@ -242,7 +249,15 @@ public class Agent {
             return null;
         }
         String toolId = (String) this.stagingTool.get("name");
-        Map<String, String> args = (Map<String, String>) this.stagingTool.get("args");
+        String argsJson = (String) this.stagingTool.get("args");
+
+        Map<String, String> args = null;
+        try {
+            args = mapper.readValue(argsJson, new TypeReference<Map<String, String>>() {});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         boolean found = false;
         Object resp = null;
         for (Tool tool : this.tools) {
@@ -250,7 +265,7 @@ public class Agent {
                 found = true;
                 resp = tool.run(args);
                 Prompt responsePrompt = new Prompt.Builder("response")
-                        .formatted(0, toolId,  new Gson().toJson(resp))
+                        .formatted(0, toolId, new Gson().toJson(resp))
                         .withRole("system")
                         .build();
                 this.history.addNewPrompt(responsePrompt.getPrompt());

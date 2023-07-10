@@ -19,44 +19,40 @@ public class Cli {
         Response resp = agent.chat();
 
         while (true) {
-            if (resp != null) {
-                System.out.println(agent.getName() + ": " + resp);
-            } else {
-                if (resp.hasThoughts()) {
-                    Thought thoughts = resp.getThoughts();
-                    if (thoughts.hasText()) {
-                        System.out.println(agent.getName() + ": " + thoughts.getText());
-                    }
-                    if (thoughts.hasReasoning()) {
-                        System.out.println(agent.getName() + ": Reasoning: " + thoughts.getReasoning());
-                    }
-                    if (thoughts.hasPlan()) {
-                        for (String plan : thoughts.getPlan().split("\n")) {
-                            System.out.println(agent.getName() + ": " + plan);
-                        }
-                    }
-                    if (thoughts.hasCriticism()) {
-                        System.out.println(agent.getName() + ": Criticism: " + thoughts.getCriticism());
-                    }
-                    if (thoughts.hasSpeak()) {
-                        System.out.println(agent.getName() + ": (voice) " + thoughts.getSpeak());
+            if (resp.hasThoughts()) {
+                Thought thoughts = resp.getThoughts();
+                if (thoughts.hasText()) {
+                    System.out.println(agent.getName() + ": " + thoughts.getText());
+                }
+                if (thoughts.hasReasoning()) {
+                    System.out.println(agent.getName() + ": Reasoning: " + thoughts.getReasoning());
+                }
+                if (thoughts.hasPlan()) {
+                    for (String plan : thoughts.getPlan().split("\n")) {
+                        System.out.println(agent.getName() + ": " + plan);
                     }
                 }
-                if (resp.hasCommand()) {
-                    System.out.println("Agent wants to execute the following command: \n" + resp.getCommand());
-                    while (true) {
-                        System.out.print("(Y/N)? ");
-                        String yn = scanner.nextLine().toLowerCase().trim();
-                        if ("y".equals(yn) || "n".equals(yn)) {
-                            if ("y".equals(yn)) {
-                                resp = agent.chat("GENERATE NEXT COMMAND JSON", true);
-                            } else {
-                                System.out.print("Enter feedback (Why not execute the command?): ");
-                                String feedback = scanner.nextLine();
-                                resp = agent.chat(feedback, false);
-                            }
-                            break;
+                if (thoughts.hasCriticism()) {
+                    System.out.println(agent.getName() + ": Criticism: " + thoughts.getCriticism());
+                }
+                if (thoughts.hasSpeak()) {
+                    System.out.println(agent.getName() + ": (voice) " + thoughts.getSpeak());
+                }
+            }
+            if (resp.hasCommand()) {
+                System.out.println("Agent wants to execute the following command: \n" + resp.getCommand());
+                while (true) {
+                    System.out.print("(Y/N)? ");
+                    String yn = scanner.nextLine().toLowerCase().trim();
+                    if ("y".equals(yn) || "n".equals(yn)) {
+                        if ("y".equals(yn)) {
+                            resp = agent.chat("GENERATE NEXT COMMAND JSON", true);
+                        } else {
+                            System.out.print("Enter feedback (Why not execute the command?): ");
+                            String feedback = scanner.nextLine();
+                            resp = agent.chat(feedback, false);
                         }
+                        break;
                     }
                 }
             }
