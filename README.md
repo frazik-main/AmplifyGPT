@@ -48,6 +48,7 @@ export OPENAI_API_KEY=<your-openai-api-key>
 - Java 1.8+
 - [An OpenAI API Key](https://platform.openai.com/account/api-keys)
 - Windows/Linux/Mac
+- Google API key
 
 ## Want to contribute?
 
