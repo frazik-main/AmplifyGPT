@@ -37,7 +37,7 @@ public class Agent {
         this.name = name;
         this.description = description;
         this.goals = goals;
-        this.memory = new LocalMemory(new OpenAIEmbeddingProvider());
+        this.memory = new LocalMemory();
         this.tools = Arrays.asList(new Browser(), new GoogleSearch());
         this.openAIModel = new OpenAIModel(model);
     }
@@ -64,7 +64,7 @@ public class Agent {
         prompt.add(currentTimePrompt.getPrompt());
 
         // Retrieve relevant memory
-        List<String> relevantMemory = memory.get(history.subListToString(Math.max(0, history.getSize() - 10), history.getSize()), 10);
+        List<String> relevantMemory = memory.get(10);
 
         if (relevantMemory != null) {
             int tokenLimit = 2500;
@@ -163,7 +163,7 @@ public class Agent {
                         .withRole("system")
                         .formatted(0, this.stagingResponse, output, message)
                         .build();
-                this.memory.add(humanFeedbackPrompt.getContent(), null);
+                this.memory.add(humanFeedbackPrompt.getContent());
             } else {
                 Prompt noApprovePrompt = new Prompt.Builder("no_approve")
                         .withRole("system")
@@ -174,7 +174,7 @@ public class Agent {
                         .withRole("system")
                         .formatted(0, this.stagingResponse, message)
                         .build();
-                this.memory.add(noApproveReplayPrompt.getContent(), null);
+                this.memory.add(noApproveReplayPrompt.getContent());
             }
             this.stagingTool = null;
             this.stagingResponse = null;
