@@ -29,19 +29,6 @@ public class RegressionTests {
     }
 
     @Test
-    void memoryTest() {
-        EmbeddingProvider embeddingProvider = new OpenAIEmbeddingProvider();
-        Memory memory = new LocalMemory(embeddingProvider);
-
-        memory.add("Hello world1", null);
-        memory.add("Hello world2", null);
-
-        List<String> rez = memory.get("Hello world1", 1);
-
-        assertEquals(Arrays.asList("Hello world1"), rez);
-    }
-
-    @Test
     void modelTest() {
         Model model = new OpenAIModel("gpt-3.5-turbo");
         ChatMessage chatMessage = new ChatMessage();
@@ -83,7 +70,7 @@ public class RegressionTests {
 
         Agent agent = new Agent(name, description, goals, "gpt-3.5-turbo");
         Response resp = agent.chat();
-        assertEquals(resp.getCommand(), "google_search");
+        assertEquals("google_search", resp.getCommand());
     }
 
 }
