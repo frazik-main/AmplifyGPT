@@ -18,9 +18,7 @@ public class ExampleSearch {
         goals.add("There will be no user assistance. Terminate once writing both files is complete.");
 
         Agent agent = new Agent(name, description, goals, "gpt-3.5-turbo");
-
         agent.cli();
-
     }
 
 }
