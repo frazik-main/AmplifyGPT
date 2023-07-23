@@ -19,7 +19,7 @@ and i18n support in mind. It can help you easily incorporate Auto-GPT like funct
 - :loop: GPT 3.5 and GPT 4 support: AmplifyGPT supports both GPT 3.5 and GPT 4.
 - 🗃️ Multi-model support: Architected to supports multiple models (GPTx, Bard, LLaMA, StableLM ...).
 - :watch: Prompt optimization: Prompt optimization to consume fewer tokens.
-- :cyclone: Support Java 1.8 and above: For maximum compability.
+- :cyclone: Support Java 1.8 and above: For maximum compatibility.
 
 ## Installation
 
