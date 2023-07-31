@@ -66,11 +66,11 @@ public class GoogleSearch extends Tool {
         String query = args.get("query");
         int numResults = args.get("numResults") == null ? 8 : Integer.parseInt(args.get("numResults"));
         Map<String, Object> result = new HashMap<>();
-        if (googleApiKey != null && !googleApiKey.trim().isEmpty() && !googleApiKey.equals("your-google-api-key")) {
-            result.put("results", googleSearch(query, numResults));
-        } else {
+//        if (googleApiKey != null && !googleApiKey.trim().isEmpty() && !googleApiKey.equals("your-google-api-key")) {
+//            result.put("results", googleSearch(query, numResults));
+//        } else {
             result.put("results", getSearchResults(query, numResults));
-        }
+//        }
         return result;
     }
 
