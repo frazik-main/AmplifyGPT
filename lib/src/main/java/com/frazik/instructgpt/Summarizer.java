@@ -15,6 +15,7 @@ public class Summarizer {
 
     public Summarizer(String model) {
         this.model = model;
+        this.openAIModel = new OpenAIModel(model);
     }
 
     public String summarize(String text, String query) {
