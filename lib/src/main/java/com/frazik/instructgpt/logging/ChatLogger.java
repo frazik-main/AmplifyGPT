@@ -1,5 +1,6 @@
 package com.frazik.instructgpt.logging;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -8,22 +9,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+@Slf4j
 public class ChatLogger {
 
-    private String currentFolder;
-
+    private final File currentFolder;
+    private static final SimpleDateFormat CURRENT_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    private static final SimpleDateFormat CURRENT_MIN_SEC_FORMAT = new SimpleDateFormat("mm-ss");
     public ChatLogger() {
-        this.currentFolder = new SimpleDateFormat("yyyy-MM-dd-HH-mm").format(new Date());
+        this.currentFolder = new File(CURRENT_DATE_TIME_FORMAT.format(new Date()));
     }
     public void write(List<Map<String, String>> fullPrompt, String response) {
         // get current millis
-        int currentMillis = (int) System.currentTimeMillis();
-        File promptFile = new File(currentFolder + "/prompt" + currentMillis + ".log");
-        File reponseFile = new File(currentFolder + "/response" + currentMillis + ".log");
+        String currentMinSec = CURRENT_MIN_SEC_FORMAT.format(new Date());
+        File promptFile = new File(currentFolder, currentMinSec + "-prompt.log");
+        File reponseFile = new File(currentFolder,currentMinSec + "-response.log");
         try {
             // Write full prompt to prompt.log
-            promptFile.createNewFile();
+            if (!promptFile.createNewFile()) {
+                return;
+            };
+
             for (Map<String, String> prompt : fullPrompt) {
                 for (Map.Entry<String, String> entry : prompt.entrySet()) {
                     String key = entry.getKey();
@@ -34,20 +39,16 @@ public class ChatLogger {
                     if (key.equals("text")) {
                         value = value + "\n";
                     }
-                    FileUtils.write(promptFile, value);
+                    FileUtils.write(promptFile, value, "UTF-8");
                 }
             }
             // Write response to response.log
-            reponseFile.createNewFile();
-            FileUtils.write(reponseFile, response);
+            if (reponseFile.createNewFile()) {
+                FileUtils.write(reponseFile, response, "UTF-8");
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void initializeFolder() {
-        File file = new File(currentFolder);
-        file.mkdir();
     }
 
 }

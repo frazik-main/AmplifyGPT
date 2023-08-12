@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.frazik.instructgpt.auto.Cli;
 import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
+import com.frazik.instructgpt.logging.ChatLogger;
 import com.frazik.instructgpt.memory.LocalMemory;
 import com.frazik.instructgpt.models.OpenAIModel;
 import com.frazik.instructgpt.prompts.Prompt;
@@ -32,6 +33,7 @@ public class Agent {
     private JsonNode stagingResponse;
     private final OpenAIModel openAIModel;
     private static final ObjectMapper mapper = new ObjectMapper();
+    private ChatLogger chatLogger = new ChatLogger();
     public Agent(String name, String description, List<String> goals, String model) {
         this.history = new PromptHistory();
         this.name = name;
@@ -183,6 +185,7 @@ public class Agent {
         int tokenCount = openAIModel.countTokens(fullPrompt);
         int tokenLimit = openAIModel.getTokenLimit();
         String resp = openAIModel.chat(fullPrompt, tokenLimit - tokenCount);
+        chatLogger.write(fullPrompt, resp);
         System.out.println("=========");
         System.out.println(resp);
         System.out.println("=========");
