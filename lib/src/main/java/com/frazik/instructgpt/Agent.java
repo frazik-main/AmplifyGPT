@@ -185,7 +185,7 @@ public class Agent {
         int tokenCount = openAIModel.countTokens(fullPrompt);
         int tokenLimit = openAIModel.getTokenLimit();
         String resp = openAIModel.chat(fullPrompt, tokenLimit - tokenCount);
-        //chatLogger.write(fullPrompt, resp);
+        chatLogger.write(fullPrompt, resp);
         System.out.println("=========");
         System.out.println(resp);
         System.out.println("=========");
