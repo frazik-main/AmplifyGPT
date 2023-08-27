@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.frazik.instructgpt.auto.Cli;
-import com.frazik.instructgpt.embedding.OpenAIEmbeddingProvider;
-import com.frazik.instructgpt.logging.ChatLogger;
 import com.frazik.instructgpt.memory.LocalMemory;
+import com.frazik.instructgpt.models.Model;
 import com.frazik.instructgpt.models.OpenAIModel;
 import com.frazik.instructgpt.prompts.Prompt;
 import com.frazik.instructgpt.prompts.PromptHistory;
@@ -31,9 +30,8 @@ public class Agent {
     private final List<Tool> tools;
     private Map<String, Object> stagingTool;
     private JsonNode stagingResponse;
-    private final OpenAIModel openAIModel;
+    private final Model openAIModel;
     private static final ObjectMapper mapper = new ObjectMapper();
-    private ChatLogger chatLogger = new ChatLogger();
     public Agent(String name, String description, List<String> goals, String model) {
         this.history = new PromptHistory();
         this.name = name;
@@ -182,12 +180,9 @@ public class Agent {
             this.stagingResponse = null;
         }
         List<Map<String, String>> fullPrompt = this.getFullPrompt(message);
-        int tokenCount = openAIModel.countTokens(fullPrompt);
-        int tokenLimit = openAIModel.getTokenLimit();
-        String resp = openAIModel.chat(fullPrompt, tokenLimit - tokenCount);
-        chatLogger.write(fullPrompt, resp);
+        String resp = openAIModel.chat(fullPrompt);
         System.out.println("=========");
-        System.out.println(resp);
+        System.out.println("RESPONSE FINISHED");
         System.out.println("=========");
         this.history.addNewPrompt("user", message);
         this.history.addNewPrompt("assistant", resp);

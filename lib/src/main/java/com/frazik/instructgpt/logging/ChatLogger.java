@@ -16,9 +16,9 @@ public class ChatLogger {
     private static final SimpleDateFormat CURRENT_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
     private static final SimpleDateFormat CURRENT_MIN_SEC_FORMAT = new SimpleDateFormat("mm-ss");
     public ChatLogger() {
-        this.currentFolder = new File(CURRENT_DATE_TIME_FORMAT.format(new Date()));
+        this.currentFolder = new File("chat-logs/" + CURRENT_DATE_TIME_FORMAT.format(new Date()));
         if (!currentFolder.exists()) {
-            currentFolder.mkdir();
+            currentFolder.mkdirs();
         }
     }
     public void write(List<Map<String, String>> fullPrompt, String response) {
