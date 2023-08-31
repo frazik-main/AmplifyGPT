@@ -36,13 +36,7 @@ public class ChatLogger {
                 for (Map.Entry<String, String> entry : prompt.entrySet()) {
                     String key = entry.getKey();
                     String value = entry.getValue();
-                    if (key.equals("speaker")) {
-                        value = value + ": ";
-                    }
-                    if (key.equals("text")) {
-                        value = value + "\n";
-                    }
-                    FileUtils.write(promptFile, value, "UTF-8");
+                    FileUtils.write(promptFile, key + ": " + value, "UTF-8", true);
                 }
             }
             // Write response to response.log
