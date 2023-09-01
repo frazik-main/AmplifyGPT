@@ -21,6 +21,30 @@ public class ChatLogger {
             currentFolder.mkdirs();
         }
     }
+
+    public void write(String[] prompts, String response) {
+        // get current millis
+        String currentMinSec = CURRENT_MIN_SEC_FORMAT.format(new Date());
+        File promptFile = new File(currentFolder, currentMinSec + "-prompt.log");
+        File reponseFile = new File(currentFolder,currentMinSec + "-response.log");
+        try {
+            // Write full prompt to prompt.log
+            if (!promptFile.createNewFile()) {
+                return;
+            };
+
+            for (String prompt : prompts) {
+                FileUtils.write(promptFile, prompt, "UTF-8", true);
+            }
+            // Write response to response.log
+            if (reponseFile.createNewFile()) {
+                FileUtils.write(reponseFile, response, "UTF-8");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void write(List<Map<String, String>> fullPrompt, String response) {
         // get current millis
         String currentMinSec = CURRENT_MIN_SEC_FORMAT.format(new Date());

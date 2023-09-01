@@ -23,4 +23,14 @@ public abstract class Model {
         chatLogger.write(messages, chatResult);
         return chatResult;
     }
+
+    public abstract String summarize(String[] prompts, Integer maxTokens);
+
+    public String summarize(String[] prompts) {
+        String summarizeResults = summarize(prompts, 150);
+        chatLogger.write(prompts, summarizeResults);
+        return summarizeResults;
+    }
+
+
 }
