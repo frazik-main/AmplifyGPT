@@ -13,20 +13,22 @@ import java.util.Map;
 public class ChatLogger {
 
     private final File currentFolder;
+    private int currentChatIndex = 0;
     private static final SimpleDateFormat CURRENT_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
     private static final SimpleDateFormat CURRENT_MIN_SEC_FORMAT = new SimpleDateFormat("mm-ss");
     public ChatLogger() {
-        this.currentFolder = new File("chat-logs/" + CURRENT_DATE_TIME_FORMAT.format(new Date()));
+        this.currentFolder = new File("chat-logs/" + System.getProperty("sun.java.command"));
         if (!currentFolder.exists()) {
             currentFolder.mkdirs();
         }
     }
 
     public void write(String[] prompts, String response) {
+        currentChatIndex++;
         // get current millis
         String currentMinSec = CURRENT_MIN_SEC_FORMAT.format(new Date());
-        File promptFile = new File(currentFolder, currentMinSec + "-prompt.log");
-        File reponseFile = new File(currentFolder,currentMinSec + "-response.log");
+        File promptFile = new File(currentFolder, "sum-prompt." + currentChatIndex + ".log");
+        File reponseFile = new File(currentFolder,"sum-response." + currentChatIndex + ".log");
         try {
             // Write full prompt to prompt.log
             if (!promptFile.createNewFile()) {
@@ -46,10 +48,11 @@ public class ChatLogger {
     }
 
     public void write(List<Map<String, String>> fullPrompt, String response) {
+        currentChatIndex++;
         // get current millis
         String currentMinSec = CURRENT_MIN_SEC_FORMAT.format(new Date());
-        File promptFile = new File(currentFolder, currentMinSec + "-prompt.log");
-        File reponseFile = new File(currentFolder,currentMinSec + "-response.log");
+        File promptFile = new File(currentFolder, "plain-prompt." + currentChatIndex + ".log");
+        File reponseFile = new File(currentFolder,"plain-response." + currentChatIndex + ".log");
         try {
             // Write full prompt to prompt.log
             if (!promptFile.createNewFile()) {

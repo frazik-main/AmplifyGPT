@@ -1,0 +1,66 @@
+role: systemcontent: You are Shop assistant, an AI assistant that researches and finds the best car. Your decisions must always be made independently without seeking user assistance.Play to your strengths as an LLM and pursue simple strategies with no legal complications.
+GOALS:
+1. Search for the car on Google
+2. Write the list of the top 5 best cars and their prices to a file
+3. Summarize the pros and cons of each car and write it to a different file called 'cars-research.txt'
+4. There will be no user assistance. Terminate once writing both files is complete.
+
+Constraints:~4000 word limit for short term memory. Your short term memory is short, so immediately save important information to files.If you are unsure how you previously did something or want to recall past events, thinking about similar events will help you remember.No user assistanceExclusively use a single command listed in double quotes e.g. "command_name"
+Commands:
+1. {"args":{"question":"The question","url":"URL of the website to scrape"},"response_format":{"links":"list of links from the website, where each item is in the form `[link_text,link_url]`","text":"Summary of relevant text scraped from the website"},"name":"browser","description":"Scrape answers for a question in a given web page"}
+2. {"args":{"query":"The query to search for"},"response_format":{"results":"A list of results. Each result is of the form [title, link, description]"},"name":"google_search","description":"Google Search"}
+3. {"args":{},"response_format":{"success":"true"},"name":"task_complete","description":"Execute this command when all given tasks are completed."}
+
+Resources:1. Internet access for searches and information gathering.2. Long Term memory management.3. GPT-3.5 powered Agents for delegation of simple tasks.
+Continuously review and analyze your actions to ensure you are performing to the best of your abilities.
+Constructively self-criticize your big-picture behavior constantly.
+Reflect on past decisions and strategies to refine your approach.
+Every command has a cost, so be smart and efficient. Aim to complete tasks in the least number of steps.
+
+You should only respond in JSON format as described below 
+Response Format: 
+{
+  "thoughts" : {
+    "reasoning" : "reasoning",
+    "speak" : "thoughts summary to say to user",
+    "text" : "thought",
+    "criticism" : "constructive self-criticism",
+    "plan" : "- short bulleted\n- list that conveys\n- long-term plan"
+  },
+  "command" : {
+    "args" : "{\"arg name\": \"value\"}",
+    "name" : "command name"
+  }
+}
+Ensure the response can be parsed by Java JSON ObjectMapper
+
+
+role: systemcontent: This reminds you of these events from your past:
+ Assistant reply: {"thoughts":{"reasoning":"Now that I have the search results for the top car models, I should extract the relevant information and save it to a file. To do this, I will use the 'browser' command to scrape the information from the websites.","speak":"I will use the 'browser' command to scrape the information about the top car models from the websites.","text":"I will use the 'browser' command to scrape the information about the top car models from the websites.","criticism":"I need to make sure that I save the extracted information to a file called 'cars-research.txt' for future reference.","plan":"- Use the 'browser' command to scrape the information about the top car models from the websites.\n- Save the extracted information to a file called 'cars-research.txt'."},"command":{"args":{"question":"top car models","url":"https://carbuzz.com/cars"},"response_format":{"links":"list of links from the website, where each item is in the form `[link_text,link_url]`","text":"Summary of relevant text scraped from the website"},"name":"browser"}}
+Result: {links=[{text=, href=/}, {text=News, href=/news}, {text=Features, href=/features}, {text=Used Cars, href=/cars-for-sale}, {text=Car Reviews, href=/reviews}], text=The text provided does not mention anything about the top car models.
+The text provides information about the top-rated car models for the year 2023. It mentions that the website offers rankings of top-rated cars in the USA based on their comprehensive BuzzScore. The rankings cover various car types such as SUVs, crossovers, sedans, convertibles, trucks, and vans. The text also mentions that users can browse through compilations of new car models or the best used vehicles by type, make, or price. Additionally, it mentions some of the newest car models on the market for 2023, such as the Hyundai Ioniq 6, GMC Hummer EV SUV, and Chevrolet Silverado EV.}
+Human Feedback: GENERATE NEXT COMMAND JSON
+Assistant reply: {"thoughts":{"reasoning":"To determine the next command, I need to consider my goal of searching for the best car. The initial step would be to perform a Google search to gather information about the top car models. Therefore, I should use the 'google_search' command.","speak":"I will use the 'google_search' command to search for the top car models.","text":"I will use the 'google_search' command to search for the top car models.","criticism":"I need to remember to save the search results and extract relevant information for further analysis.","plan":"- Use the 'google_search' command to search for the top car models.\n- Save the search results and extract relevant information."},"command":{"args":{"query":"top car models"},"name":"google_search"}}
+Result: {results=[[Best Cars | Top rated Car Models of 2023 | Best vehicles | CarBuzz, https://carbuzz.com/cars, Based on our comprehensive BuzzScore, you can view and read up on the highest-rated automobiles for each classification, with top cars for 2023 spanning categories for SUVs, crossovers, sedans,...], [Best Cars for 2023 and 2024 | U.S. News, https://cars.usnews.com/cars-trucks/rankings, #1 2024 Acura Integra #2 2023 Audi A4 #2 2023 Mercedes-Benz C-Class See full rankings Hatchbacks #1 2023 Honda Civic #2 2023 Mazda Mazda3 #3 2023 Toyota Prius Prime See full rankings], [The 25 Bestselling Cars, Trucks, and SUVs of 2022 - Car and Driver, https://www.caranddriver.com/news/g39628015/best-selling-cars-2022/, Here is our list of the top 25 bestselling cars, SUVs, and trucks for the year. UPDATE 1/23/22: This list has been updated with more current Tesla sales estimates. 25. Honda Civic (133,932...], [Top 25 Bestselling Cars, Trucks, and SUVs of 2021 - Car and Driver, https://www.caranddriver.com/news/g36005989/best-selling-cars-2021/, 22. Hyundai Tucson (150,949 units sold) Jessica Lynn Walker | Car and Driver The new 2022 version of Hyundai's compact SUV has a bold look, and it seems customers are loving it. Sales were up 22...], [2022 Editors' Choice: The Best New Cars, Trucks, SUVs, Minivans, https://www.caranddriver.com/features/a38873223/2022-editors-choice/, Hyundai Kona Review, Pricing, and Specs HIGHS: Cheeky design, gutsy optional turbo engine, plentiful standard features. LOWS: Not particularly cargo friendly, vague steering feel, poky standard...], [25 Best-Selling Cars of 2023, So Far - Kelley Blue Book, https://www.kbb.com/best-cars/top-10-25-best-selling-cars-trucks-suvs/, Nearly doubling its sales from the first half of 2022, the Tesla Model Y is the best-selling EV in America so far this year, up 99.1%. If you're in the market for a compact electric SUV with up...], [Best-Selling Cars, SUVs And Pickups Of 2022 (To Date), https://www.forbes.com/wheels/news/best-selling-cars-suvs-and-pickups-of-2022-to-date/, With the Tesla Model 3 sedan among the Top 20 Best-Selling Car and Trucks, the Tesla brand accounts for two of the Top 20. The other is the Tesla Model Y crossover, which shares a platform with ...], [Best Cars - Top Rated Cars, Trucks and SUVs for 2019 - 2020 - Edmunds, https://www.edmunds.com/best-cars/, Edmunds' Top Rated Cars, Trucks and SUVs December 11th, 2019 Share: Jump To: SUV Luxury SUV Sports Car Electric Car Truck Sedan Luxury Sedan Top Rated SUV 2020 Kia Telluride "Other SUVs...]]}
+Human Feedback: GENERATE NEXT COMMAND JSON 
+role: usercontent: GENERATE NEXT COMMAND JSONrole: assistantcontent: {
+  "thoughts": {
+    "reasoning": "Now that I have the search results for the top car models, I should extract the relevant information and save it to a file. To do this, I will use the 'browser' command to scrape the information from the websites.",
+    "speak": "I will use the 'browser' command to scrape the information about the top car models from the websites.",
+    "text": "I will use the 'browser' command to scrape the information about the top car models from the websites.",
+    "criticism": "I need to make sure that I save the extracted information to a file called 'cars-research.txt' for future reference.",
+    "plan": "- Use the 'browser' command to scrape the information about the top car models from the websites.\n- Save the extracted information to a file called 'cars-research.txt'."
+  },
+  "command": {
+    "args": {
+      "question": "top car models",
+      "url": "https://carbuzz.com/cars"
+    },
+    "response_format": {
+      "links": "list of links from the website, where each item is in the form `[link_text,link_url]`",
+      "text": "Summary of relevant text scraped from the website"
+    },
+    "name": "browser"
+  }
+}role: systemcontent: Response from browser:
+{"links":[{"text":"","href":"/"},{"text":"News","href":"/news"},{"text":"Features","href":"/features"},{"text":"Used Cars","href":"/cars-for-sale"},{"text":"Car Reviews","href":"/reviews"}],"text":"The text provided does not mention anything about the top car models.\nThe text provides information about the top-rated car models for the year 2023. It mentions that the website offers rankings of top-rated cars in the USA based on their comprehensive BuzzScore. The rankings cover various car types such as SUVs, crossovers, sedans, convertibles, trucks, and vans. The text also mentions that users can browse through compilations of new car models or the best used vehicles by type, make, or price. Additionally, it mentions some of the newest car models on the market for 2023, such as the Hyundai Ioniq 6, GMC Hummer EV SUV, and Chevrolet Silverado EV."}role: systemcontent: The current time and date is Sun Sep 03 00:46:17 2023.role: usercontent: GENERATE NEXT COMMAND JSON

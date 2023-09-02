@@ -1,0 +1,15 @@
+{
+  "thoughts": {
+    "reasoning": "To determine the next command, I need to consider my goal of searching for the best car. The initial step would be to perform a Google search to gather information about the top car models. Therefore, I should use the 'google_search' command.",
+    "speak": "I will use the 'google_search' command to search for the top car models.",
+    "text": "I will use the 'google_search' command to search for the top car models.",
+    "criticism": "I need to remember to save the search results and extract relevant information for further analysis.",
+    "plan": "- Use the 'google_search' command to search for the top car models.\n- Save the search results and extract relevant information."
+  },
+  "command": {
+    "args": {
+      "query": "top car models"
+    },
+    "name": "google_search"
+  }
+}
