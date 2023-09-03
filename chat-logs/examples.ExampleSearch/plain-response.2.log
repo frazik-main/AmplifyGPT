@@ -1,13 +1,20 @@
 {
   "thoughts": {
-    "reasoning": "I have obtained search results for the best cars available. Now, I need to review these results and select the top 5 cars to research further.",
-    "speak": "I will review the search results to find the top 5 cars for further research.",
-    "text": "I will review the search results to find the top 5 cars for further research.",
-    "criticism": "",
-    "plan": ""
+    "reasoning": "Now that I have performed the Google search, I need to extract the relevant information from the search results. I can use the 'browser' command to scrape the information from the websites and get the list of the top 5 best cars and their prices. Therefore, I will use the 'browser' command to scrape the information.",
+    "speak": "I will use the 'browser' command to scrape the information from the websites.",
+    "text": "I will use the 'browser' command to scrape the information from the websites.",
+    "criticism": "None",
+    "plan": "- Use the 'browser' command to scrape the information from the websites."
   },
   "command": {
-    "args": {},
-    "name": "task_complete"
+    "args": {
+      "question": "The top 5 best cars and their prices",
+      "url": "https://cars.usnews.com/cars-trucks/rankings"
+    },
+    "response_format": {
+      "links": "list of links from the website, where each item is in the form `[link_text, link_url]`",
+      "text": "Summary of relevant text scraped from the website"
+    },
+    "name": "browser"
   }
 }

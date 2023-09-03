@@ -1,14 +1,14 @@
 {
   "thoughts": {
-    "reasoning": "I need to begin my research by performing a Google search to find the best cars available. This will help me gather information about different car models and their prices.",
-    "speak": "I will start by performing a Google search to find the best cars available.",
-    "text": "I will perform a Google search to find the best cars available.",
-    "criticism": "",
-    "plan": ""
+    "reasoning": "To determine the next command, I need to clarify my goal. My goal is to search for the best cars and their prices. To achieve this, I should start by performing a Google search to find a list of the top 5 best cars. Therefore, I will use the 'google_search' command.",
+    "speak": "I will perform a Google search to find the top 5 best cars.",
+    "text": "I will perform a Google search to find the top 5 best cars.",
+    "criticism": "None",
+    "plan": "- Perform a Google search to find the top 5 best cars."
   },
   "command": {
     "args": {
-      "query": "best cars"
+      "query": "top 5 best cars"
     },
     "name": "google_search"
   }

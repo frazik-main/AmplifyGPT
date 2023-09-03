@@ -1,13 +1,18 @@
 {
   "thoughts": {
-    "reasoning": "I have obtained search results for the best cars available. Now, I need to review these results and select the top 5 cars to research further.",
-    "speak": "I will review the search results to find the top 5 cars for further research.",
-    "text": "I will review the search results to find the top 5 cars for further research.",
-    "criticism": "",
-    "plan": ""
+    "reasoning": "To determine the next command, I need to clarify my goal. My goal is to search for the best cars and their prices. To achieve this, I should start by performing a Google search to find a list of the top 5 best cars. Therefore, I will use the 'google_search' command.",
+    "speak": "I will perform a Google search to find the top 5 best cars.",
+    "text": "I will perform a Google search to find the top 5 best cars.",
+    "criticism": "None",
+    "plan": "- Perform a Google search to find the top 5 best cars."
   },
   "command": {
-    "args": {},
-    "name": "task_complete"
+    "args": {
+      "query": "top 5 best cars"
+    },
+    "response_format": {
+      "results": "A list of results. Each result is of the form [title, link, description]"
+    },
+    "name": "google_search"
   }
 }
