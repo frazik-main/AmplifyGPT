@@ -1,15 +1,15 @@
 {
-  "thoughts" : {
-    "reasoning" : "I need to search for the best cars on Google to gather information.",
-    "speak" : "I will search for the best cars on Google.",
-    "text" : "Searching for the best cars on Google.",
-    "criticism" : "No criticism",
-    "plan" : "1. Search for the best cars on Google.\n2. Gather information.\n3. Analyze the results."
+  "thoughts": {
+    "reasoning": "I need to begin my research by performing a Google search to find the best cars available. This will help me gather information about different car models and their prices.",
+    "speak": "I will start by performing a Google search to find the best cars available.",
+    "text": "I will perform a Google search to find the best cars available.",
+    "criticism": "",
+    "plan": ""
   },
-  "command" : {
-    "args" : {
-      "query" : "best cars"
+  "command": {
+    "args": {
+      "query": "best cars"
     },
-    "name" : "google_search"
+    "name": "google_search"
   }
 }

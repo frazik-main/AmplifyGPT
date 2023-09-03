@@ -1,13 +1,13 @@
 {
-  "thoughts" : {
-    "reasoning" : "I have analyzed the search results for the best cars and selected the top 5 cars to research further.",
-    "speak" : "I have analyzed the search results and selected the top 5 cars to research further.",
-    "text" : "Analyzing search results and selecting the top 5 cars.",
-    "criticism" : "No criticism",
-    "plan" : "1. Research further on the selected cars.\n2. Write the list of top 5 cars and their prices to a file.\n3. Summarize the pros and cons of each car and write it to a different file."
+  "thoughts": {
+    "reasoning": "I have obtained search results for the best cars available. Now, I need to review these results and select the top 5 cars to research further.",
+    "speak": "I will review the search results to find the top 5 cars for further research.",
+    "text": "I will review the search results to find the top 5 cars for further research.",
+    "criticism": "",
+    "plan": ""
   },
-  "command" : {
-    "args" : {},
-    "name" : "task_complete"
+  "command": {
+    "args": {},
+    "name": "task_complete"
   }
 }
