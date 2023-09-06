@@ -35,13 +35,13 @@ public class ChatLogger {
                     String value = entry.getValue();
                     FileUtils.write(promptFile, key + ": " + value + "\n", "UTF-8", true);
                 }
+                FileUtils.write(promptFile, "\n--\n", "UTF-8", true);
             }
 
             // Write response to response.log
             if (reponseFile.createNewFile()) {
                 FileUtils.write(reponseFile, response, "UTF-8");
             }
-            FileUtils.write(promptFile, "\n--", "UTF-8", true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

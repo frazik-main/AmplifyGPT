@@ -37,8 +37,12 @@ Ensure the response can be parsed by Java JSON ObjectMapper
 
 
 
+
+--
 role: system
-content: The current time and date is Thu Sep 07 00:10:18 2023.
+content: The current time and date is Thu Sep 07 00:30:05 2023.
+
+--
 role: user
 content: Determine which next command to use, and respond using the format specified above.
 

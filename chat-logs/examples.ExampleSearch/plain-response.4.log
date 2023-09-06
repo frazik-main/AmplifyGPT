@@ -1,18 +1,20 @@
 {
   "command": {
-    "name": "google_search",
+    "name": "browser",
     "args": {
-      "query": "best cars"
+      "question": "What are the pros and cons of the 2024 Acura Integra?",
+      "url": "https://cars.usnews.com/cars-trucks/rankings"
     },
     "response_format": {
-      "results": "A list of results. Each result is of the form [title, link, description]"
+      "links": [],
+      "text": ""
     }
   },
   "thoughts": {
-    "reasoning": "Since I need to search for the best cars, I should use the 'google_search' command to find relevant information.",
-    "speak": "I will use the 'google_search' command to find the best cars.",
-    "text": "I will use the 'google_search' command to find the best cars.",
-    "criticism": "None",
-    "plan": "- Use the 'google_search' command to find the best cars.\n- Analyze the search results and select the top 5 cars.\n- Retrieve the prices of the selected cars.\n- Write the list of the top 5 cars and their prices to a file.\n- Summarize the pros and cons of each car and write it to a different file called 'cars-research.txt'."
+    "reasoning": "To find the pros and cons of the 2024 Acura Integra, I will use the 'browser' command to scrape the information from the website. The website URL is 'https://cars.usnews.com/cars-trucks/rankings'. By providing the question 'What are the pros and cons of the 2024 Acura Integra?', I can extract the relevant information from the webpage.",
+    "speak": "I will use the 'browser' command to find the pros and cons of the 2024 Acura Integra.",
+    "text": "I will use the 'browser' command to scrape the website and find the pros and cons of the 2024 Acura Integra.",
+    "criticism": "",
+    "plan": "- Use the 'browser' command with the question 'What are the pros and cons of the 2024 Acura Integra?'\n- Scrape the website 'https://cars.usnews.com/cars-trucks/rankings' to find the relevant information\n- Save the pros and cons to a file"
   }
 }
