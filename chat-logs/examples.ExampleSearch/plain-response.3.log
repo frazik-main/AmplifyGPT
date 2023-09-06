@@ -1,18 +1,19 @@
 {
-  "thoughts": {
-    "reasoning": "To determine the next command, I need to clarify my goal. My goal is to search for the best cars and their prices. To achieve this, I should start by performing a Google search to find a list of the top 5 best cars. Therefore, I will use the 'google_search' command.",
-    "speak": "I will perform a Google search to find the top 5 best cars.",
-    "text": "I will perform a Google search to find the top 5 best cars.",
-    "criticism": "None",
-    "plan": "- Perform a Google search to find the top 5 best cars."
-  },
   "command": {
+    "name": "browser",
     "args": {
-      "query": "top 5 best cars"
+      "question": "What are the pros and cons of the 2023 Honda Civic?",
+      "url": "https://cars.usnews.com/cars-trucks/rankings"
     },
     "response_format": {
-      "results": "A list of results. Each result is of the form [title, link, description]"
-    },
-    "name": "google_search"
+      "text": "Summary of relevant text scraped from the website"
+    }
+  },
+  "thoughts": {
+    "reasoning": "To analyze the pros and cons of the 2023 Honda Civic, I will use the 'browser' command to scrape information from the website.",
+    "speak": "I will use the 'browser' command to scrape the pros and cons of the 2023 Honda Civic.",
+    "text": "I will use the 'browser' command to scrape the pros and cons of the 2023 Honda Civic.",
+    "criticism": "None",
+    "plan": "- Use the 'browser' command to scrape the pros and cons of the 2023 Honda Civic.\n- Analyze the pros and cons of each car and select the top 5 cars.\n- Retrieve the prices of the selected cars.\n- Write the list of the top 5 cars and their prices to a file.\n- Summarize the pros and cons of each car and write it to a different file called 'cars-research.txt'."
   }
 }

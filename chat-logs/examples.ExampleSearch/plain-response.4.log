@@ -1,20 +1,18 @@
 {
-  "thoughts": {
-    "reasoning": "Now that I have performed the Google search, I need to extract the relevant information from the search results. I can use the 'browser' command to scrape the information from the websites and get the list of the top 5 best cars and their prices. Therefore, I will use the 'browser' command to scrape the information.",
-    "speak": "I will use the 'browser' command to scrape the information from the websites.",
-    "text": "I will use the 'browser' command to scrape the information from the websites.",
-    "criticism": "None",
-    "plan": "- Use the 'browser' command to scrape the information from the websites."
-  },
   "command": {
+    "name": "google_search",
     "args": {
-      "question": "The top 5 best cars and their prices",
-      "url": "https://cars.usnews.com/cars-trucks/rankings"
+      "query": "best cars"
     },
     "response_format": {
-      "links": "list of links from the website, where each item is in the form `[link_text, link_url]`",
-      "text": "Summary of relevant text scraped from the website"
-    },
-    "name": "browser"
+      "results": "A list of results. Each result is of the form [title, link, description]"
+    }
+  },
+  "thoughts": {
+    "reasoning": "Since I need to search for the best cars, I should use the 'google_search' command to find relevant information.",
+    "speak": "I will use the 'google_search' command to find the best cars.",
+    "text": "I will use the 'google_search' command to find the best cars.",
+    "criticism": "None",
+    "plan": "- Use the 'google_search' command to find the best cars.\n- Analyze the search results and select the top 5 cars.\n- Retrieve the prices of the selected cars.\n- Write the list of the top 5 cars and their prices to a file.\n- Summarize the pros and cons of each car and write it to a different file called 'cars-research.txt'."
   }
 }

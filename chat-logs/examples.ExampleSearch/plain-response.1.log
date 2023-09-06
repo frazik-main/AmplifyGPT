@@ -1,14 +1,14 @@
 {
   "thoughts": {
-    "reasoning": "To determine the next command, I need to clarify my goal. My goal is to search for the best cars and their prices. To achieve this, I should start by performing a Google search to find a list of the top 5 best cars. Therefore, I will use the 'google_search' command.",
-    "speak": "I will perform a Google search to find the top 5 best cars.",
-    "text": "I will perform a Google search to find the top 5 best cars.",
+    "reasoning": "Since I need to search for the best cars, I should use the 'google_search' command to find relevant information.",
+    "speak": "I will use the 'google_search' command to find the best cars.",
+    "text": "I will use the 'google_search' command to find the best cars.",
     "criticism": "None",
-    "plan": "- Perform a Google search to find the top 5 best cars."
+    "plan": "- Use the 'google_search' command to find the best cars.\n- Analyze the search results and select the top 5 cars.\n- Retrieve the prices of the selected cars.\n- Write the list of the top 5 cars and their prices to a file.\n- Summarize the pros and cons of each car and write it to a different file called 'cars-research.txt'."
   },
   "command": {
     "args": {
-      "query": "top 5 best cars"
+      "query": "best cars"
     },
     "name": "google_search"
   }

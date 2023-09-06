@@ -1,1 +1,2 @@
-{"role": "user", "content": """""" Using the above text, please answer the following question: "The top 5 best cars and their prices" -- if the question cannot be answered using the text, please summarize the text."}
+{"role": "user", "content": """""" Using the above text, please answer the following question: "What are the pros and cons of the Acura Integra 2024?" -- if the question cannot be answered using the text, please summarize the text."}
+--

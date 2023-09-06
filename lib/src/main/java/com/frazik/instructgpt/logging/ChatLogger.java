@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+@SuppressWarnings("ResultOfMethodCallIgnored")
 @Slf4j
 public class ChatLogger {
 
@@ -15,50 +16,13 @@ public class ChatLogger {
     public ChatLogger() {
         this.currentFolder = new File("chat-logs/" + System.getProperty("sun.java.command"));
         if (!currentFolder.exists()) {
-            //noinspection ResultOfMethodCallIgnored
             currentFolder.mkdirs();
         }
     }
-
-    public void write(String[] prompts, String response) {
-        currentChatIndex++;
-        // get current millis
-        File promptFile = new File(currentFolder, "sum-prompt." + currentChatIndex + ".log");
-        if (promptFile.exists()) {
-            promptFile.delete();
-        }
-        File reponseFile = new File(currentFolder,"sum-response." + currentChatIndex + ".log");
-        if (reponseFile.exists()) {
-            reponseFile.delete();
-        }
-        try {
-            // Write full prompt to prompt.log
-            if (!promptFile.createNewFile()) {
-                return;
-            }
-
-            for (String prompt : prompts) {
-                FileUtils.write(promptFile, prompt, "UTF-8", true);
-            }
-            // Write response to response.log
-            if (reponseFile.createNewFile()) {
-                FileUtils.write(reponseFile, response, "UTF-8");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void write(List<Map<String, String>> fullPrompt, String response) {
         currentChatIndex++;
-        File promptFile = new File(currentFolder, "plain-prompt." + currentChatIndex + ".log");
-        if (promptFile.exists()) {
-            promptFile.delete();
-        }
-        File reponseFile = new File(currentFolder,"plain-response." + currentChatIndex + ".log");
-        if (reponseFile.exists()) {
-            reponseFile.delete();
-        }
+        File promptFile = getAndInitialize("plain-prompt.");
+        File reponseFile = getAndInitialize("plain-response.");
         try {
             // Write full prompt to prompt.log
             if (!promptFile.createNewFile()) {
@@ -72,13 +36,48 @@ public class ChatLogger {
                     FileUtils.write(promptFile, key + ": " + value + "\n", "UTF-8", true);
                 }
             }
+
             // Write response to response.log
             if (reponseFile.createNewFile()) {
                 FileUtils.write(reponseFile, response, "UTF-8");
             }
+            FileUtils.write(promptFile, "\n--", "UTF-8", true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void write(String[] prompts, String response) {
+        currentChatIndex++;
+        // get current millis
+        File promptFile = getAndInitialize("sum-prompt.");
+        File reponseFile = getAndInitialize("sum-response.");
+        try {
+            // Write full prompt to prompt.log
+            if (!promptFile.createNewFile()) {
+                return;
+            }
+
+            for (String prompt : prompts) {
+                FileUtils.write(promptFile, prompt, "UTF-8", true);
+            }
+
+            // Write response to response.log
+            if (reponseFile.createNewFile()) {
+                FileUtils.write(reponseFile, response, "UTF-8");
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private File getAndInitialize(String x) {
+        File promptFile = new File(currentFolder, x + currentChatIndex + ".log");
+        if (promptFile.exists()) {
+            promptFile.delete();
+        }
+        return promptFile;
     }
 
 }
