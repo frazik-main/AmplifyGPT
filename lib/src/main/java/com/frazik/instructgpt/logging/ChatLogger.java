@@ -12,22 +12,23 @@ import java.util.Map;
 public class ChatLogger {
 
     private final File currentFolder;
+    private final File promptFile;
     private int currentChatIndex = 0;
     public ChatLogger() {
         this.currentFolder = new File("chat-logs/" + System.getProperty("sun.java.command"));
+        this.promptFile = new File(currentFolder, "prompt.log");
+        if (promptFile.exists()) {
+            promptFile.delete();
+        }
         if (!currentFolder.exists()) {
             currentFolder.mkdirs();
         }
     }
     public void write(List<Map<String, String>> fullPrompt, String response) {
         currentChatIndex++;
-        File promptFile = getAndInitialize("plain-prompt.");
-        File reponseFile = getAndInitialize("plain-response.");
+        //File reponseFile = getAndInitialize("plain-response.");
         try {
-            // Write full prompt to prompt.log
-            if (!promptFile.createNewFile()) {
-                return;
-            }
+
 
             for (Map<String, String> prompt : fullPrompt) {
                 for (Map.Entry<String, String> entry : prompt.entrySet()) {
@@ -35,13 +36,17 @@ public class ChatLogger {
                     String value = entry.getValue();
                     FileUtils.write(promptFile, key + ": " + value + "\n", "UTF-8", true);
                 }
-                FileUtils.write(promptFile, "\n--\n", "UTF-8", true);
+                //FileUtils.write(promptFile, "\n--\n", "UTF-8", true);
             }
 
+
+
             // Write response to response.log
-            if (reponseFile.createNewFile()) {
-                FileUtils.write(reponseFile, response, "UTF-8");
-            }
+//            if (reponseFile.createNewFile()) {
+//                FileUtils.write(reponseFile, response, "UTF-8");
+//            }
+            FileUtils.write(promptFile, response, "UTF-8", true);
+            FileUtils.write(promptFile, "\n--\n", "UTF-8", true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -73,7 +78,7 @@ public class ChatLogger {
     }
 
     private File getAndInitialize(String x) {
-        File promptFile = new File(currentFolder, x + currentChatIndex + ".log");
+        File promptFile = new File(currentFolder, x + ".log");
         if (promptFile.exists()) {
             promptFile.delete();
         }
