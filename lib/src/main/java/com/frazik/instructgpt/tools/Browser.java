@@ -31,7 +31,7 @@ public class Browser extends Tool {
         options = new ChromeOptions();
         options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.49 Safari/537.36");
         // options.setHeadless(true);
-        summarizer = new Summarizer("model");
+        summarizer = new Summarizer("gpt-3.5-turbo");
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 close();
@@ -97,11 +97,6 @@ public class Browser extends Tool {
     }
 
     @Override
-    public Map<String, Object> run(Map<String, String> kwargs) {
-        return null;
-    }
-
-    @Override
     public Map<String, String> getResp() {
         Map<String, String> resp = new HashMap<String, String>();
         resp.put("text", "Summary of relevant text scraped from the website");
@@ -119,7 +114,9 @@ public class Browser extends Tool {
         }
     }
 
-    public Map<String, Object> run(String url, String question) {
+    @Override
+    public Map<String, Object> run(Map<String, String> args) {
+        String url = args.get("url");
         Map<String, Object> result = new HashMap<>();
         Document doc = null;
         try {
@@ -150,6 +147,7 @@ public class Browser extends Tool {
                 }
             }
             String extractedText = String.join("\n", chunks);
+            String question = args.get("question");
             String summary = this.summarizer.summarize(extractedText, question);
             result.put("text", summary);
             result.put("links", extractedLinks);

@@ -37,21 +37,21 @@ public class OpenAIModel extends Model {
         }
         return chatMessages;
     }
-
+    @Override
     public String chat(List<Map<String, String>> messages, Integer maxTokens) {
-        return chat(toChatMessages(messages), maxTokens, 0.8);
+        return summarize(toChatMessages(messages), maxTokens, 0.8);
     }
 
-    public String chat(String[] prompts) {
+    @Override
+    public String summarize(String[] prompts, Integer maxTokens) {
         List<ChatMessage> chatMessages = new ArrayList<>();
         for (String prompt : prompts) {
             chatMessages.add(new ChatMessage("user", prompt));
         }
-        return chat(chatMessages, 100, 0.8);
+        return summarize(chatMessages, maxTokens, 0.8);
     }
 
-    @Override
-    public String chat(List<ChatMessage> messages, Integer maxTokens, Double temperature) {
+    public String summarize(List<ChatMessage> messages, Integer maxTokens, Double temperature) {
         OpenAiService openAiService = new OpenAiService(apiKey, Duration.ofSeconds(55));
 
         int numRetries = 3;

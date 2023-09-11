@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,12 +32,9 @@ public class RegressionTests {
     @Test
     void modelTest() {
         Model model = new OpenAIModel("gpt-3.5-turbo");
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setRole("assistant");
-        chatMessage.setContent("This is a test!");
-        List<ChatMessage> chatMessages = new ArrayList<>();
-        chatMessages.add(chatMessage);
-        String response = model.chat(chatMessages, 100, 0.8);
+        List<Map<String, String>> chatMessages = new ArrayList<>();
+        chatMessages.add(Map.of("role", "assistant", "content", "This is a test!"));
+        String response = model.chat(chatMessages, 100);
 
         assertTrue(response.length() > 10);
     }

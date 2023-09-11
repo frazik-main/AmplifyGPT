@@ -4,11 +4,13 @@ import com.google.api.services.customsearch.v1.Customsearch;
 import com.google.api.services.customsearch.v1.CustomsearchRequestInitializer;
 import com.google.api.services.customsearch.v1.model.Result;
 import com.google.api.services.customsearch.v1.model.Search;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 public class GoogleSearch extends Tool {
     private final String googleApiKey = System.getenv("GOOGLE_API_KEY");
@@ -64,9 +66,38 @@ public class GoogleSearch extends Tool {
         if (googleApiKey != null && !googleApiKey.trim().isEmpty() && !googleApiKey.equals("your-google-api-key")) {
             result.put("results", googleSearch(query, numResults));
         } else {
-            //result.put("results", duckduckgoSearch(query, numResults));
+            result.put("results", duckduckgoSearch(query, numResults));
         }
         return result;
+    }
+
+    private final static String DUCKDUCKGO_SEARCH_URL = "https://duckduckgo.com/html/?q=";
+    public static List<List<String>> duckduckgoSearch(String query, int numResults) {
+        try {
+            Document doc = Jsoup.connect(DUCKDUCKGO_SEARCH_URL + query).get();
+            Elements results = Objects.requireNonNull(doc.getElementById("links")).
+                    getElementsByClass("results_links");
+            List<List<String>> resultList = new ArrayList<>();
+            for (int i = 0; i < numResults && i < results.size(); i++) {
+                Element result = results.get(i);
+                Element title = Objects.requireNonNull(result.getElementsByClass("links_main").first()).
+                        getElementsByTag("a").first();
+                assert title != null;
+                System.out.println("\nURL:" + title.attr("href"));
+                System.out.println("Title:" + title.text());
+                String snippet = Objects.requireNonNull(result.getElementsByClass("result__snippet").first()).
+                        text();
+                List<String> innerList = new ArrayList<>();
+                innerList.add(title.text());
+                innerList.add(title.attr("href"));
+                innerList.add(snippet);
+                resultList.add(innerList);
+            }
+            return resultList;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

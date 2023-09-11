@@ -4,29 +4,29 @@ package com.frazik.instructgpt;
 Adapted from Auto-GPT (https://github.com/Significant-Gravitas/Auto-GPT)
 */
 
+import com.frazik.instructgpt.models.Model;
 import com.frazik.instructgpt.models.OpenAIModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Summarizer {
-    private String model;
-    private OpenAIModel openAIModel;
+    private Model model;
 
     public Summarizer(String model) {
-        this.model = model;
+        this.model = new OpenAIModel(model);
     }
 
     public String summarize(String text, String query) {
         List<String> summaries = new ArrayList<>();
         for (String chunk : chunkText(text)) {
-            summaries.add(chat(new String[]{prompt(chunk, query)}, 300));
+            summaries.add(chat(new String[]{prompt(chunk, query)}));
         }
         String summary = String.join("\n", summaries);
         while (summary.length() > Math.pow(2, 13)) {
             summaries = new ArrayList<>();
             for (String chunk : chunkText(summary)) {
-                summaries.add(chat(new String[]{prompt(chunk, query)}, 300));
+                summaries.add(chat(new String[]{prompt(chunk, query)}));
             }
             summary = String.join("\n", summaries);
         }
@@ -64,8 +64,8 @@ public class Summarizer {
                 + "\" -- if the question cannot be answered using the text, please summarize the text.\"}";
     }
 
-    private String chat(String[] prompts, int maxTokens) {
-        return openAIModel.chat(prompts);
+    private String chat(String[] prompts) {
+        return model.summarize(prompts);
     }
 }
 

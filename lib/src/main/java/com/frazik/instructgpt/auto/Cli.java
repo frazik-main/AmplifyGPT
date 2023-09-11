@@ -41,20 +41,19 @@ public class Cli {
             }
             if (resp.hasCommand()) {
                 System.out.println("Agent wants to execute the following command: \n" + resp.getCommand());
-                while (true) {
+                String yn = "";
+                do {
                     System.out.print("(Y/N)? ");
-                    String yn = scanner.nextLine().toLowerCase().trim();
-                    if ("y".equals(yn) || "n".equals(yn)) {
-                        if ("y".equals(yn)) {
-                            resp = agent.chat("GENERATE NEXT COMMAND JSON", true);
-                        } else {
-                            System.out.print("Enter feedback (Why not execute the command?): ");
-                            String feedback = scanner.nextLine();
-                            resp = agent.chat(feedback, false);
-                        }
-                        break;
-                    }
+                    yn = scanner.nextLine().toLowerCase().trim();
+                } while (!"y".equals(yn) && !"n".equals(yn));
+                if ("y".equals(yn)) {
+                    resp = agent.chat("GENERATE NEXT COMMAND JSON", true);
+                } else {
+                    System.out.print("Enter feedback (Why not execute the command?): ");
+                    String feedback = scanner.nextLine();
+                    resp = agent.chat(feedback, false);
                 }
+                continue;
             }
             System.out.print("Enter message: ");
             String inp = scanner.nextLine();
